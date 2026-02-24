@@ -1,0 +1,1078 @@
+LOCUS       P61889                 20939 bp    DNA              UNK 17-FEB-2026
+DEFINITION  UniPcrTemplate gDNA region for P61889 (NCBI Escherichia coli str.
+            K-12 substr. MG1655 NC_000913.3:3373329-3394267, strand=-1,
+            source=NCBI).
+ACCESSION   P61889
+VERSION     P61889
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  Escherichia coli str. K-12 substr. MG1655
+            NCBI.
+FEATURES             Location/Qualifiers
+     source          1..20939
+                     /organism="Escherichia coli str. K-12 substr. MG1655"
+                     /db_xref="UniProtKB:P61889"
+                     /db_xref="NCBI_nuccore:NC_000913.3"
+                     /note="extracted with ±20939 bp flank"
+                     /note="original genomic: NCBI Escherichia coli str. K-12
+                     substr. MG1655 NC_000913.3:3373329-3394267"
+     gene            complement(10001..10939)
+                     /gene="mdh"
+                     /db_xref="NCBI:NC_000913.3"
+                     /note="gene span from NCBI lookup"
+     misc_feature    104..108
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    196..200
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    212..215
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    1023..1027
+                     /note="Homopolymer run: Gx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    1029..1033
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    1150..1153
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    1214..1219
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    1657..1660
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    1699..1702
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    1797..1801
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    1832..1835
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    2199..2204
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    2233..2237
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    2460..2465
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    2741..2790
+                     /note="Extreme GC window(s): GC<30.0% or GC>70.0%"
+                     /label="extreme_gc"
+                     /source="internal_gc"
+                     /score="74.0"
+     misc_feature    3095..3098
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    3265..3268
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    3360..3363
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    3738..3741
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    3745..3748
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    3752..3755
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    3771..3774
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    3927..3931
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    3995..3998
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    4021..4080
+                     /note="Extreme GC window(s): GC<30.0% or GC>70.0%"
+                     /label="extreme_gc"
+                     /source="internal_gc"
+                     /score="72.0"
+     misc_feature    4209..4213
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    4353..4357
+                     /note="Homopolymer run: Gx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    4479..4483
+                     /note="Homopolymer run: Gx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    4751..4840
+                     /note="Extreme GC window(s): GC<30.0% or GC>70.0%"
+                     /label="extreme_gc"
+                     /source="internal_gc"
+                     /score="25.0"
+     misc_feature    4982..4987
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    5215..5219
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    5245..5249
+                     /note="Homopolymer run: Cx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    5349..5354
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    5751..5754
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    5762..5765
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    5835..5838
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    6281..6285
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    6391..6395
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    6441..6445
+                     /note="Homopolymer run: Gx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    6699..6702
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    6896..6901
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    6974..6977
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    7063..7067
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    7343..7347
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    7456..7460
+                     /note="Homopolymer run: Gx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    7718..7722
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    7742..7745
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    8005..8008
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    8074..8079
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    8186..8190
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    8415..8422
+                     /note="Homopolymer run: Ax8"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="8.0"
+     misc_feature    8424..8428
+                     /note="Homopolymer run: Cx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    8434..8438
+                     /note="Homopolymer run: Gx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    8554..8559
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    8733..8737
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    8831..8990
+                     /note="Extreme GC window(s): GC<30.0% or GC>70.0%"
+                     /label="extreme_gc"
+                     /source="internal_gc"
+                     /score="25.658203125"
+     misc_feature    8857..8861
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    8878..8883
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    8889..8893
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    8919..8924
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    8955..8961
+                     /note="Homopolymer run: Tx7"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="7.0"
+     misc_feature    9028..9031
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    9038..9042
+                     /note="Homopolymer run: Gx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    9066..9069
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    9085..9088
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    9162..9165
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    9491..9550
+                     /note="Extreme GC window(s): GC<30.0% or GC>70.0%"
+                     /label="extreme_gc"
+                     /source="internal_gc"
+                     /score="28.000000000000004"
+     misc_feature    9616..9620
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    9651..9780
+                     /note="Extreme GC window(s): GC<30.0% or GC>70.0%"
+                     /label="extreme_gc"
+                     /source="internal_gc"
+                     /score="25.5"
+     misc_feature    10059..10063
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    10170..10174
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    10294..10298
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    10396..10401
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    10417..10421
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    10813..10817
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    10955..10960
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    10979..10984
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    11556..11559
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    12084..12089
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    12296..12300
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    12785..12788
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    13298..13303
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    13305..13309
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    13382..13386
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    13406..13409
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    13413..13416
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    13517..13522
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    13541..13590
+                     /note="Extreme GC window(s): GC<30.0% or GC>70.0%"
+                     /label="extreme_gc"
+                     /source="internal_gc"
+                     /score="26.0"
+     misc_feature    13631..13634
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    13670..13674
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    13840..13844
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    14212..14218
+                     /note="Homopolymer run: Tx7"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="7.0"
+     misc_feature    14284..14287
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    14344..14348
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    14407..14411
+                     /note="Homopolymer run: Cx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    14449..14452
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    14500..14503
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    14630..14633
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    14703..14708
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    15002..15008
+                     /note="Homopolymer run: Gx7"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="7.0"
+     misc_feature    15416..15424
+                     /note="Homopolymer run: Ax5; Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    15436..15439
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    15461..15464
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    15479..15485
+                     /note="Homopolymer run: Tx7"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="7.0"
+     misc_feature    15494..15498
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    15523..15526
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    15591..15640
+                     /note="Extreme GC window(s): GC<30.0% or GC>70.0%"
+                     /label="extreme_gc"
+                     /source="internal_gc"
+                     /score="28.000000000000004"
+     misc_feature    16486..16491
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    16506..16512
+                     /note="Homopolymer run: Tx7"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="7.0"
+     misc_feature    16536..16540
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    16553..16557
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    16584..16588
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    16641..16649
+                     /note="Homopolymer run: Tx5; Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    16734..16739
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    16819..16823
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    17167..17171
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    18021..18025
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    18086..18089
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    18373..18378
+                     /note="Homopolymer run: Cx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    18482..18487
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    18698..18702
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    18726..18730
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    18734..18739
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    18759..18763
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    18860..18864
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    18884..18888
+                     /note="Homopolymer run: Cx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    19117..19120
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    19169..19172
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    19338..19342
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    19468..19473
+                     /note="Homopolymer run: Tx6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    19501..19690
+                     /note="Extreme GC window(s): GC<30.0% or GC>70.0%"
+                     /label="extreme_gc"
+                     /source="internal_gc"
+                     /score="25.66552734375"
+     misc_feature    19503..19507
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    19525..19529
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    19534..19539
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    19625..19629
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    19646..19650
+                     /note="Homopolymer run: Tx5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    19717..19720
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    19866..19871
+                     /note="Homopolymer run: Ax6"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="6.0"
+     misc_feature    20324..20327
+                     /note="Homopolymer run: Cx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+     misc_feature    20559..20563
+                     /note="Homopolymer run: Ax5"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="5.0"
+     misc_feature    20613..20616
+                     /note="Homopolymer run: Gx4"
+                     /label="homopolymer"
+                     /source="internal_regex"
+                     /score="4.0"
+ORIGIN
+        1 cttacatctt gatatcccgc tgaacggcga actggtaacc gcgaaaggtg aagtgacgct
+       61 gcgtaataac agtctgttta tcaaaccact cgacagcacc ctgaaaaatt tgagcggtaa
+      121 attcagcttt atcaatagcg atctgcaaag tgaaccactg acagcaagct ggtttaatca
+      181 gccgttgaac gtggattttt ccaccaaaga aggggcaaaa gcctaccagg tagcggtaaa
+      241 cctcaacggt aactggcaac cggcgaaaac cggcgttctg cctgaagcgg tgaacgaagc
+      301 attgagtggc agcgtggcgt gggatggtaa agtgggcatt gatctgcctt atcatgctgg
+      361 tgcgacctat aacatagagc tgaacggcga tctaaagaat gtgagcagtc acttaccttc
+      421 accgttagcc aaacctgcgg gtgaaccact agcggtaaac gttaaggttg atggcaatct
+      481 caacagcttt gaattaaccg gacaggctgg tgcggataat catttcaata gccgctggtt
+      541 gctcggtcaa aagctgacgc tcgatcgtgc tatttgggcg gcagacagta aaacgctccc
+      601 gccgttgccg gaacaaagtg gcgttgaact caatatgccg ccgatgaatg gtgccgagtg
+      661 gctggccctg ttccagaaag gcgctgcgga gagtgtcggt ggtgcagcga gtttcccaca
+      721 acacataacg ttacgtacgc ctatgttgtc actgggaaat cagcaatgga ataacctgag
+      781 tattgtttcg caaccgacgg caaatggcac cctggttgaa gcgcaagggc gtgaaatcaa
+      841 cgccacgcta gcgatgcgta ataacgcgcc gtggctggcg aatatcaaat atctttatta
+      901 caacccgagc gtggcgaaaa ctcgtggtga ttcaacgccg tcatcacctt tcccgacaac
+      961 ggagcgcatt aacttccgtg gctggccgga cgcccaaata cgatgcacag agtgctggtt
+     1021 ctgggggcaa aaattcggtc gcattgacag tgatatcacc atttctggcg atacgttaac
+     1081 gctgaccaat ggactgattg atactggttt ctcgcggctt actgccgatg gtgaatgggt
+     1141 taataatccg gggaatgaac gtacctcgct gaaaggaaaa ctgcgcgggc agaaaattga
+     1201 tgccgccgca gaattttttg gtgtcacgac gcccatacgc cagtcgtcat ttaatgtgga
+     1261 ttacgattta cactggcgca aagcaccctg gcagccagat gaagcgacgt tgaatggcat
+     1321 cattcatact caactgggta aaggcgaaat taccgaaatc aataccggac atgccgggca
+     1381 attgctgcgc ttattgagcg tagatgccct gatgcgtaag ctgcgttttg atttcagaga
+     1441 cacttttggc gaagggttct attttgactc cattcgcagc accgcgtgga ttaaagacgg
+     1501 cgttatgcac accgacgaca cgctggtgga tggcctggag gcggatatcg ccatgaaagg
+     1561 gtcggtaaat ctggtacgtc gcgacctgaa tatggaagcg gttgtcgcac cagagatttc
+     1621 tgcgacggtg ggcgtggctg cggcttttgc ggttaacccc attgttggcg cggcagtgtt
+     1681 tgccgccagt aaagtgctgg ggccgctgtg gagcaaagtc tccattttgc gctatcacat
+     1741 ttcgggtccg ctggacgatc cgcaaatcaa cgaagtgttg cgccaaccgc gtaaagaaaa
+     1801 agcgcaatga tttgacgagg gcgcgtaatt gccccaatct cataggataa tcgttgccaa
+     1861 aggccaacga gccagaacat aaccgtaggt cggatagggc gttcacgccg catccggcag
+     1921 ccgttgcctg atgcgacgct gtgcgtctta tcaggcctac aaacggaaca taaccgtagg
+     1981 tcggataagg cgtttacgcc gcatccggca gccgttgcct gatgcgacgc tgtgcgtctt
+     2041 atcaggccta caaacggaac ataaccgtag gtcggataag gcgtttacgc cgcatccgac
+     2101 agccgttgcc tgatgcgacg ctgtgcgtct tatcaggcct acaaaccgga acataaccgt
+     2161 aggctggata gggcgttcac gccgcatccg gcagccgtaa aaaatcctct actgcagtaa
+     2221 ctaacgagta gcaaaaacga tgagtcttaa cctggtaagt gaacaattgc tagcggcgaa
+     2281 cggcctgaaa catcaggact tgttcgcgat cctcggtcaa ctggccgaac gtcgccttga
+     2341 ttatggcgat ctctattttc agtcgagcta tcacgaatcc tgggttttag aagaccgcat
+     2401 tattaaagat ggttcttaca acatcgatca gggcgttggt gtgcgtgcaa tcagcggtga
+     2461 aaaaaccgga tttgcttacg ctgaccaaat cagcctgctg gcgctggaac agagtgcgca
+     2521 agcggcgcgc accatcgtcc gtgatagtgg tgatggtaaa gtacagacgc tgggcgcggt
+     2581 agagcatagc ccgttgtata cctcggtaga tccgctgcaa agcatgagcc gtgaagagaa
+     2641 gctggatatc ctgcgtcgcg tcgataaggt tgcccgcgaa gcggacaagc gcgtacagga
+     2701 agtgactgcc agcctcagtg gtgtctatga attaattttg gttgcggcca ccgacggcac
+     2761 gctagcggcg gatgtccgtc cgctggtgcg tctttccgtg agcgttctcg tcgaagaaga
+     2821 tggcaaacgc gaacgcggtg ccagtggcgg cggcggtcgt tttggttatg aattcttcct
+     2881 tgccgatctc gacggcgaag tccgtgcgga tgcatgggca aaagaagcag tgcgtatggc
+     2941 gctggtcaat ctttctgccg ttgctgcacc agcgggcacc atgccggtag tacttggcgc
+     3001 aggttggccg ggcgtgctgt tgcatgaagc ggttggtcac ggtctggaag gcgacttcaa
+     3061 ccgccgtggc acttcagtat ttagtggaca ggtcggggag ctggtggctt cagaactgtg
+     3121 taccgtggtt gatgatggca cgatggtcga tcgccgaggt tcggtggcga ttgatgacga
+     3181 aggtacgcca ggccagtaca acgtgctgat tgagaacggc attctgaaag gctacatgca
+     3241 ggataaactc aacgcgcgtt tgatggggat gacgccgact ggcaacggtc gccgtgaatc
+     3301 ctacgcccat ctgcccatgc cgcgtatgac caacacctat atgctgccgg gtaaatcgac
+     3361 cccgcaggaa attattgaat ccgttgagta cggtatctat gcaccgaact ttggtggcgg
+     3421 tcaggtggat atcacctccg gcaaattcgt tttctccact tcagaagcat atctgattga
+     3481 aaacggtaaa gtaacgaagc cggtgaaagg cgcaacgttg attggttccg gtatcgaaac
+     3541 catgcagcag atttcgatgg ttggcaacga cctgaaactg gataacggcg tgggtgtctg
+     3601 cggtaaagaa gggcaaagtt tgccggttgg cgtgggccag ccaacgttga aagtcgataa
+     3661 cctgactgtt ggcggtactg cgtaataatt tcactatttt cagaaggata attaatcttt
+     3721 ctacgtgcac gaacggtccc ctcgcccctt tggggtgagg gttagggtga ggggaacccg
+     3781 ttggcacagg tttgtacaac gtaacagtac aatatgaatt acttctcttt cccgcgcccg
+     3841 tgcatctcct gaaacaattt accgacctca acaaaataat ccgtcagcga gttgatcacg
+     3901 acctgtacct tcagcggcag cttatctttt tcggtatata acgcataaac cgggcgtgga
+     3961 tctgactggt aacgcggcag caggatctcc agctccccac gattgatctc gttgatcacc
+     4021 cacatcagcg gcacgtaggc gatcccggca cccgccgtca gccagcgcac cagcgtcatc
+     4081 ggatcattag tcacaaatct tccttgtggg atcaggcgag tcgagatccc ttccggtgcg
+     4141 atcagttcaa attcattgtc gggccgcacg ctgtattcaa gccatgaatg actactcaaa
+     4201 tcggcgggtt tttccggtat gccgtattgt gtgagatagc ttttcgcggc gcacaccacc
+     4261 attggcatcg cgcccagacg gcgggaaaac aggctggaat cctgcaacgc gccgacgcgg
+     4321 atcaccacat ccagaccgtc ggcaatcagg tcgggggctg gaattccggt aaccagattg
+     4381 acgctcaaac ctgggtattc tttcagcatt ttggctgtca gcccggcgag aacattttgt
+     4441 gccatagttg aagaacagcc aatgcgtagc gtcccgatgg gggtgttatt gaaggcatac
+     4501 agttgctcat gaacatcctg cacttcatga agcatacgac ggcagccctg gtagtaaatt
+     4561 ctaccggctt cggtcaggcc aatgctgcgt gtgctacggt ttaacagctt tacctgcaac
+     4621 tcatcttcca gttttgatac cgtctgactg atggacgaaa cgctcatctg tagctgtctg
+     4681 gcggcggcgg taaaagagcc aaattcaact actttggcaa acaccgacat gcgttttagt
+     4741 cgttccatta ttcactctga cttaaaagtg atttagatca cataatatag ataacagcat
+     4801 aacagttacg ctaatatatt aaatatcaat ctacagcaat gttgctctcg cccggctttc
+     4861 catgcccttc tctgcggcga cagatgctga aaataataac gcctgctctc tctttacaac
+     4921 caaggtcaac atgagtctgt ttcccgttat cgtggtgttt gggctgtcct tcccaccgat
+     4981 attttttgaa ttgcttttat cactggcgat tttctggctg gtgcgccggg tacttgtgcc
+     5041 aacaggtatc tacgactttg tctggcatcc ggcgttgttc aacaccgcgc tctattgctg
+     5101 cttgttttat ttgatatcgc gactgttcgt ttgaggttga agtgaaaaca ctaataagaa
+     5161 aattctcccg tacggccatc acggtcgtat tagtcattct ggccttcatc gcaattttta
+     5221 atgcctgggt ctattacacc gaatccccct ggacgcgtga cgcgcgcttt agcgctgacg
+     5281 tcgttgcgat cgcgccggac gtttctggac tcattaccca ggtgaatgtt catgataacc
+     5341 agctggtgaa aaaaggacag atactgttca ccatcgacca gccgcgctat caaaaggcgc
+     5401 ttgaggaagc gcaagccgat gttgcttatt atcaggtact ggcacaggag aaacgccagg
+     5461 aggccggacg tcgtaaccgt ctcggtgtgc aggcgatgtc tcgcgaagag atcgaccagg
+     5521 ccaacaacgt actacaaacg gttctgcatc agttagcgaa agcgcaggcg acccgcgatc
+     5581 tggcaaaact ggatcttgaa cgcacggtga tccgcgcgcc agcagatggc tgggtgacca
+     5641 acctcaacgt ctataccggt gagtttatta ctcgaggatc aacggcggtt gcgctggtga
+     5701 aacagaactc cttctatgta ctggcctata tggaagaaac taagctggaa ggggtgcgtc
+     5761 cggggtatcg tgcagagatc acgccgcttg gcagtaacaa agtgctgaaa gggactgttg
+     5821 atagtgttgc cgcaggggtc accaacgcca gcagcacgcg tgacgacaaa gggatggcga
+     5881 ctatagactc taaccttgaa tgggtgcgtc ttgcgcaacg tgttccggtt cgtattcgtc
+     5941 tcgacaacca gcaagagaac atctggcctg cgggcaccac tgctacagtg gtggtcactg
+     6001 gcaaacaaga tcgcgacgaa agccaggatt cgttcttccg taaaatggcc catcgcctgc
+     6061 gtgagtttgg ttaatcacga tgggtatttt ctccattgct aaccaacata ttcgctttgc
+     6121 ggtaaaactg gcgaccgcca ttgtactggc gctgtttgtt ggctttcact tccagctgga
+     6181 aacgccacgc tgggcggtac tgacagcggc gattgttgcc gccggtacgg cctttgctgc
+     6241 gggaggtgaa ccgtattctg gcgctattcg ctatcgtggc tttttgcgca tcatcggcac
+     6301 atttattggc tgtattgccg gactggtgat catcattgcg atgatccgcg caccattatt
+     6361 gatgattctg gtgtgctgta tctgggccgg tttttgtacc tggatatcct cgctggtacg
+     6421 aatagaaaac tcgtatgcgt gggggctggc cggttatacc gcgctgatca ttgtgatcac
+     6481 cattcagccg gaaccattgc ttacgccgca gtttgccgtc gaacgttgta gcgagatcgt
+     6541 tatcggtatt gtgtgtgcga ttatggcgga tttgctcttt tctccgcgat cgatcaaaca
+     6601 agaagtggat cgagagctgg aaagtttgct ggtcgcgcaa tatcaattaa tgcaactctg
+     6661 tatcaagcat ggcgatggtg aagttgtcga taaagcctgg ggcgacctgg tgcgacgcac
+     6721 cacggcgcta caaggcatgc gcagcaacct gaatatggaa tcttcccgct gggcgcgggc
+     6781 caatcgacgt ttaaaagcga tcaatacgct atcgctgacg ctgattaccc aatcctgcga
+     6841 aacttatctt attcagaata cgcgcccgga attgatcact gatactttcc gcgaattttt
+     6901 tgacacgccg gtagaaaccg cgcaggacgt ccacaagcag ctcaaacgcc tgcggagagt
+     6961 tatcgcctgg accggggaac gggaaacgcc tgtcaccatt tatagctggg tcgcggcggc
+     7021 aacgcgttat cagcttctca agcgcggcgt tatcagtaac acaaaaatca acgccaccga
+     7081 agaagagatc ctgcaaggcg aaccggaagt aaaagtagag tcagccgaac gtcatcatgc
+     7141 aatggttaac ttctggcgaa ccacactttc ctgcattctg ggcacgcttt tctggctgtg
+     7201 gacgggctgg acttccggca gtggtgcaat ggtgatgatt gcggtagtga cgtcactggc
+     7261 aatgcgtttg ccgaatccac gcatggtggc gatcgacttt atctacggga cgctggccgc
+     7321 gctgccgtta gggctgctct actttttggt gattatccct aatacccaac agagcatgtt
+     7381 gctgctgtgc attagcctgg cagtgctggg attcttcctc ggtatagaag tacagaaacg
+     7441 gcgactgggc tcgatggggg cactggccag caccataaat attatcgtgc tggataaccc
+     7501 gatgactttc catttcagtc agtttctcga cagcgcatta gggcaaatcg tcggctgtgt
+     7561 gctcgcgttc accgttattt tgctggtgcg ggataaatcg cgcgacagga ccggacgtgt
+     7621 actgcttaat cagtttgttt ctgccgctgt ttccgcgatg actaccaatg tggcacgtcg
+     7681 taaagagaac cacctcccgg cactttatca gcagctgttt ttgctgatga ataagttccc
+     7741 aggggatttg ccgaaatttc gcctggcgct gacgatgatt atcgcgcacc agcgcctgcg
+     7801 tgatgcaccg atcccggtta acgaggattt atcggcgttt caccgacaaa tgcgccgcac
+     7861 agcagaccat gtgatatctg cccgtagcga tgataaacgt cgtcggtact ttggccagtt
+     7921 gctggaagaa ctggaaatct accaggaaaa gctacgcatc tggcaagcgc caccgcaggt
+     7981 gacggaaccg gtaaatcggc tggcggggat gctccataag tatcaacatg cgttgaccga
+     8041 tagttaagtc aaaaccgacg ccaaaagcgt cggttttttc atggctatac ttagcgatgc
+     8101 acggcagaac tcgccgcgaa acgtgacggt ggcaacagat gaatatttat acctttgatt
+     8161 ttgatgagat tgagagtcag gaggattttt atcgtgactt tagccaaacc tttggtctgg
+     8221 cgaaagataa ggtacgcgat ctcgactcac tatgggatgt gttaatgaac gatgtcctgc
+     8281 cgctaccact tgagattgaa tttgttcatc tgggagagaa aacgcgtcgc cgttttggcg
+     8341 cgttaatatt gctgtttgat gaggcagagg aagagctgga agggcatttg cgttttaatg
+     8401 ttcgtcatta gcgcaaaaaa aagcccccga accgggggca atatcgtcgg acaagacgat
+     8461 gagggtttat ttgtacagtt cagccgtagc gtgccaggtg tcaccgctac gagcttcagt
+     8521 aatctggtag gccgttgcgc ctttctcttc cgcttttttg ttcagcattt cacgcatatc
+     8581 cattggcgaa gacgccacac cacttacgga tacggtcccg attgcttcac gattttgtgc
+     8641 ttgtgcagca tcaatggagt cggcagcgaa tgcaccgaaa gagagaacag aaagtacgct
+     8701 taatgcagca acagtggttt tgattttcat gatttttacc tcgacataat cttttagctg
+     8761 ggcctttgtt tcgtgaccca tatcacaaaa tcaagtatac actaattatt gagctaatta
+     8821 ataccgcgct aactgtttca gttgatacta agtgttaaaa atgtgaattt taataacaaa
+     8881 aaagaattaa aaatacggtt atttatcgtt aattctagtt ttttcaatta gataatgaat
+     8941 tttgcataat gtgctttttt taccttatgt attcattgtg tgaatgacat gtcgcagtaa
+     9001 aacgcactat tcgttaaatt aatcgcaggg gaaagcaggg ggttgagagg gataagcaac
+     9061 attttccccg ccgtcagaaa cgacggggca gagattaaag ctcctggtcg aacagctcta
+     9121 aaatcgcttc gtacaggtct ttgactgtga aaccgttagc aggggtggta aagatggtgt
+     9181 catcgccagc gatggtgccc agaatacctt ctgctttgcc cagtgagtcc agcaggcgag
+     9241 caattaactg cgccgcgcca gggctggtat gaatcacgac aactgcatcg ttgtagtcga
+     9301 tatccagcac cagattcttc aatggactgg aggtggttgg tacacccagt tcagctggca
+     9361 ggcagtaaac catttccatt ttggcattgc gtgtacgtac agcaccaaac ttggtcaaca
+     9421 tccgcgagac tttagactga ttaatattgt caaagccttg ctcctgcaac gcggcgacga
+     9481 tttcgccctg ggagctaaat ttctcttctt taagtaatgc tttaaatgct ttaactagtt
+     9541 cttcttgctt agccgagctt cgcataagtc acccgatatg gtggttgata caacattatt
+     9601 gtgcatacag atgaattttt atgcaaacag tcagccctga agaaggctga aataatgtta
+     9661 tgaaagagcg ggattttatc aaatttcgtt attgagaaac atgcctgcgt cacggcatgc
+     9721 aaattctgct taaaagtaaa ttaattgtta tcaaattgat gttgttttgg ctgaacggta
+     9781 gggtatattg tcaccacctg ttggaatgtt gcgctaatgc ataagcgact gttaattacg
+     9841 taagttaggt tcctgattac ggcaattaaa tgcataaacg ctaaacttgc gtgactacac
+     9901 attcttgaga tgtggtcatt gtaaacggca attttgtgga ttaaggtcgc ggcagcggag
+     9961 caacatatct tagtttatca atataataag gagtttagga tgaaagtcgc agtcctcggc
+    10021 gctgctggcg gtattggcca ggcgcttgca ctactgttaa aaacccaact gccttcaggt
+    10081 tcagaactct ctctgtatga tatcgctcca gtgactcccg gtgtggctgt cgatctgagc
+    10141 catatcccta ctgctgtgaa aatcaaaggt ttttctggtg aagatgcgac tccggcgctg
+    10201 gaaggcgcag atgtcgttct tatctctgca ggcgtagcgc gtaaaccggg tatggatcgt
+    10261 tccgacctgt ttaacgttaa cgccggcatc gtgaaaaacc tggtacagca agttgcgaaa
+    10321 acctgcccga aagcgtgcat tggtattatc actaacccgg ttaacaccac agttgcaatt
+    10381 gctgctgaag tgctgaaaaa agccggtgtt tatgacaaaa acaaactgtt cggcgttacc
+    10441 acgctggata tcattcgttc caacaccttt gttgcggaac tgaaaggcaa acagccaggc
+    10501 gaagttgaag tgccggttat tggcggtcac tctggtgtta ccattctgcc gctgctgtca
+    10561 caggttcctg gcgttagttt taccgagcag gaagtggctg atctgaccaa acgcatccag
+    10621 aacgcgggta ctgaagtggt tgaagcgaag gccggtggcg ggtctgcaac cctgtctatg
+    10681 ggccaggcag ctgcacgttt tggtctgtct ctggttcgtg cactgcaggg cgaacaaggc
+    10741 gttgtcgaat gtgcctacgt tgaaggcgac ggtcagtacg cccgtttctt ctctcaaccg
+    10801 ctgctgctgg gtaaaaacgg cgtggaagag cgtaaatcta tcggtaccct gagcgcattt
+    10861 gaacagaacg cgctggaagg tatgctggat acgctgaaga aagatatcgc cctgggcgaa
+    10921 gagttcgtta ataagtaatt gattagcgga taataaaaaa ccggagcaca gactccggtt
+    10981 ttttgttttg agcgcacgac ttaattggtt gccggatatt cctgaatggt gacctgcagc
+    11041 gttaactgct tatcatcacg catcactact acagggatca ccgaaccagg gcgaatttcc
+    11101 gccacctgat ccatcgtctc cagagcagag atggccggtt tgttatccac cgaaataatc
+    11161 agatcgttga cctgaatacc cgcattcgcc gccgggccgt caggtgacac ttcattaacc
+    11221 acgatccctt gcagttgatc tataccaccg ccctgcgcgt gcagtggtgc gatctcacgt
+    11281 ccgccgatac caatgtagcc gcggatcacg cgaccatcgc ggatcagctt atccataatt
+    11341 ttggttgcta actggaaagg aatcgcaaag ccgatacctt ccggcgtttc gccatcgtta
+    11401 ctcttatcaa acgacagcgt attaatgccc atcagttcgc ccagcgagtt caccagcgcg
+    11461 ccgccagagt taccgtggtt aatggaagca tcggtttgga ggaagttttg ccgcccggtc
+    11521 gggttcagac cgattcgacc cgtggcacta ataatcccct gggtaatggt ctgcccgagg
+    11581 ttgtacgggt taccgatcgc cagtactacg tcgccaatgt gcggtacgcg acgtgcatta
+    11641 attggaatgg taggtaaacc gccagtggca ttaattttaa gtaccgccag atcggttaga
+    11701 gagtcagatc ccaccagcaa tgcttcaaat acacgtccat cctgtaaggc gacgatgatc
+    11761 tgatcggcgt cgttgatgac gtgtttattg gtgatgatat aaccgcgttg atccatgatt
+    11821 acaccggatc ccagggtgcg gatctcaagc tggttgtgag agttggtgtt caaaccacgg
+    11881 ttgtaaacgt taaccaccgc tggcgcggcg cggcgaaccg ccagattata gctggcaggc
+    11941 gtctcatcgg tactgtcaaa ttgcggagtg gaaagcgggt taaggctgcg cagcgaaggc
+    12001 atggcaacca gcagaatagc gccgacaatt aatccaatcg caacggaacg taagagcttc
+    12061 acaaacatga tggaggcgtc attaaaaaag ggaacggcag cagcatacca cgagttaacc
+    12121 ggacatcaca cgtaagcctg atgcccggtt tacgacatta acgcatcagc agatagatgc
+    12181 tttcattgcc gcgtacaatt tgcagggcga tgatggccgg ttttgccgcc agcactttac
+    12241 gcatttcagc aatcgagttc acccgatcgc ggttgacgcc aatgatcaca tcgtcttttt
+    12301 gcaagccagc ctgagcagct gggcttcctt tgacaacttc atcgatttta atacctttgc
+    12361 cgccatcttt tagctgacca tcgctcaacg ttgcaccttc cagcgctggc gtgatcattt
+    12421 cagcgctggc cgacgaagag gtgctggtat cgagcgtcac ttctacttcc agtggtttgc
+    12481 cgttacgcag caggccaagc ttcactttcg tgcccggctc ggtggtcgcg atacgagagc
+    12541 gcaactcagc aaagctattc agcggtttgc cgttgaggct ggtaataata tcgcccgctt
+    12601 tgacgcccgc ttttgccgag ccagaacctg gcaacacttc gctgacaaac gcgccacgct
+    12661 gcacgtcaag gttgaaggct ttggcgatat cggcactcat ctcggtgcct ttgatgccta
+    12721 acaaaccgcg tttgatttca ccaaagtcga taagctgctg cgccagtgtt cgcgccatat
+    12781 tactggggat ggcaaatcca atcccgacgc tcccgccgcc aggcgcaagg attgcagtgt
+    12841 tgatgccaat taactcaccg ttaaggttta atagtgcacc gccggagtta ccgcggttaa
+    12901 tggaagcatc tgtctggata aagttttcca gaccttcaag attcaacccg ctgcggccta
+    12961 atgcggaaac aatgccagag gtggcggttt gcccaaggcc aaatgggtta ccgaccgcta
+    13021 cggcaaaatc accgacgcgc aatttatcgg agtcggcaat agcgatttgc gttaatttgc
+    13081 tcgggttttg aatttgtaac agggcgatat cgctctggtc atcgctacca atcagttttg
+    13141 catcaaactc gcgcccatca ttgagctgaa tactgatttt ctgtgcctga ttaatcacat
+    13201 ggttgttggt cagcacatag cctttactgg cgttgatgat gacaccggag cctaaacctt
+    13261 cgaagggttg tgcaggttga tccggtaaat catcaccaaa aaactttttg aattcttccg
+    13321 ggattttctg tccctgactg gccgttcctt ccacccgtac gctcaccact gccggaagca
+    13381 ctttttccag cattggagcc agactgggga gaggggcctg atcggcaacc tggcctggaa
+    13441 tcgacgcgac ggcctgaaat gacgccgaga gagttaaccc gacacttaac gctaatgcac
+    13501 tcaacagctg ggtttgtttt ttcattattc ctgctctcgt acctgaatga taagaaaaga
+    13561 gattcaaaac agtttgatgt tattgaattt tcagacggct aacaatgaga caccagatta
+    13621 aatgatagtc ggggagggag agaagaggag ggcgcaatgg ctgcgcccga aaaataaatt
+    13681 agtcgcgctt cgcgccagta cgcagcaggc cggatgcgcc ttcagaatag tcgcgaggca
+    13741 tctgcaccgg tgcctgatcg ttgctggctt cagactctgc cagacgatta cggaacgggt
+    13801 ttgcttcagc agacagttcc ggcagcaggc tgctggagct ttttgccatg tgctgataca
+    13861 gctggcgata gtcgtgcgcc atggtatcca gtaattccgc gctgcgggca aagtggctaa
+    13921 ccagctcttc gcgatactcg tccagttcag ctttattctt ttccagttcg tactgcaacg
+    13981 cctgttgctg gcgtagttta cgattaccaa aacgcatggc cacagcacca ataatgatgc
+    14041 cgacgactaa cccaattagc gcatattccc aggtcatgaa catctcccgt tgtcttttgt
+    14101 ttccgtaggg tgttggcttc aggctccatg cctgcggctg attatgccac tataaccgtt
+    14161 aattccacag aagtggaatc ccgactgcat atcgcgtagt gtagaacggc ctttttttcg
+    14221 tcaaccgtga acaacggcgc accgattatt caaggaataa caataagatc atgcaaagcg
+    14281 ttaccccaac atcgcaatac ctgaaggcgc ttaatgaagg cagccatcaa cccgacgacg
+    14341 ttcaaaaaga ggccgtcagc cgcctggaaa ttatttatca ggaactcatc aatagcacgc
+    14401 caccagcccc caggacgagt gggctaatgg cgcgggtcgg taagctgtgg ggtaaacgcg
+    14461 aagacacaaa gcatacgcca gtgcgtggct tatatatgtg gggcggtgta ggacgcggga
+    14521 aaacctggct gatggacctt ttctatcaaa gcctgccggg agagcggaaa cagcgcctgc
+    14581 actttcaccg ttttatgctg cgggtgcatg aagagctaac tgccttacag gggcagaccg
+    14641 atccgctgga aattattgcc gatcgcttta aagccgaaac tgacgtgctc tgttttgacg
+    14701 aattttttgt ttctgatatt accgatgcca tgctacttgg cggtctgatg aaagccctgt
+    14761 tcgctcgcgg tattaccctg gtagcgacgt caaatattcc gccggatgaa ctttatcgaa
+    14821 atggcctgca acgtgcgcgt tttctgcctg caatcgatgc cattaaacag cattgtgatg
+    14881 taatgaacgt ggacgctggt gttgattatc gtctgcgtac actcactcag gcgcatctgt
+    14941 ggctttcgcc acttcacgat gaaacccggg cgcaaatgga taaactatgg ttggcgctgg
+    15001 cgggggggaa acgagaaaat tcaccgacgt tagaaatcaa ccatcggcca ttagcaacaa
+    15061 tgggcgtcga gaaccagacg ctggcggtct cttttactac gctgtgcgtc gacgcccgca
+    15121 gtcagcatga ctatattgcg ctctcacgtc tctttcatac ggtcatgttg tttgatgtac
+    15181 cagttatgac gcggttgatg gagagcgaag cgcggcgctt tattgcgctg gtggatgagt
+    15241 tttacgagcg ccatgtcaaa ttagtggtga gtgcagaagt gccgctgtat gaaatttatc
+    15301 agggcgatcg gctgaagttt gagttccagc gttgcctgtc acgtctgcaa gagatgcaaa
+    15361 gcgaagagta tctgaagcgc gagcatttgg cgggttaaaa cctgtcacaa atcacaaaaa
+    15421 ggggtcgatc tttgaccccg acttctctat aatcctgcga ccccacgtta caagaaagtt
+    15481 tttttcccaa aactttttgt gtgctggcat aggctattcg aaggggtagg tttgccggac
+    15541 tttgtcgtgt gaacctcaac aattgaagac gtttgggtgt tcaccaacgt gtaactattt
+    15601 attgggtaag cttttaatga aaacttttac agctaaacca gaaaccgtaa aacgcgactg
+    15661 gtatgttgtt gacgcgaccg gtaaaactct gggccgtctg gctactgaac tggctcgtcg
+    15721 cctgcgcggt aagcacaaag cggaatacac tccgcacgta gataccggtg attacatcat
+    15781 cgttctgaac gctgacaaag ttgctgtaac cggcaacaag cgtactgaca aagtgtacta
+    15841 tcaccacacc ggccacatcg gtggtatcaa acaagcgacc tttgaagaga tgattgctcg
+    15901 ccgtcctgag cgtgtgattg aaatcgcggt taaaggcatg ttgccaaaag gcccgctggg
+    15961 tcgtgctatg ttccgtaaac tgaaagttta cgcgggtaac gagcacaacc acgcggcaca
+    16021 gcaaccgcaa gttcttgaca tctaatcggg attataggca atggctgaaa atcaatacta
+    16081 cggcactggt cgccgcaaaa gttccgcagc tcgcgttttc atcaaaccgg gcaacggtaa
+    16141 aatcgtaatc aaccaacgtt ctctggaaca gtacttcggt cgtgaaactg cccgcatggt
+    16201 agttcgtcag ccgctggaac tggtcgacat ggttgagaaa ctggacctgt acatcaccgt
+    16261 taaaggtggt ggtatctctg gtcaggctgg tgcgatccgt cacggtatca cccgcgctct
+    16321 gatggaatac gacgagtccc tgcgttctga actgcgtaaa gctggcttcg ttactcgtga
+    16381 cgctcgtcag gttgaacgta agaaagtcgg tctgcgtaaa gcacgtcgtc gtccgcagtt
+    16441 ctccaaacgt taattggctt ctgctccggc agaaaacaat tttcgaaaaa acccgcttcg
+    16501 gcgggttttt ttatagctaa aatctgaatc agcgtaaaaa ctggaaagtt gctttttgct
+    16561 gccacctgac agacaggtaa aacaaaaacc acatcgccaa taagggacta agtcaactat
+    16621 ttcagactaa agcgcatctc tttttcccca tttccggcat cgactcacca caatggtcgc
+    16681 aaaatctggt aaactatcat ccaattttct gcccaaatgt cgggtattgc tcattttttg
+    16741 tttgattttc gaacaaagag agtcgttcct tattgggtaa cacaacttct gactggccac
+    16801 ctggtggctg gtagcagtaa aaattctgac tatacctgga ggttttcatg gctgtcgctg
+    16861 ccaacaaacg ttcggtaatg acgctgtttt ccggtcctac tgacatctat agccatcagg
+    16921 tccgcattgt gctggctgag aaaggtgtaa gtttcgagat cgaacacgtg gaaaaggaca
+    16981 atccgcctca ggatctgatt gacctcaacc cgaatcagag cgttccgacc ctggtggatc
+    17041 gtgagctgac cctgtgggaa tctcgcatca ttatggaata tctggatgag cgtttcccgc
+    17101 atccgccact gatgcctgtt tacccggtag ctcgcggtga aagccgtctg tacatgcatc
+    17161 gcatcgaaaa agactggtac acgctgatga acaccatcat caacggttca gcttctgaag
+    17221 cagatgccgc acgtaagcaa ctgcgcgaag aactgctggc gattgcgccg gtcttcggtc
+    17281 agaagccgta cttcctgagc gatgagttca gcctggtcga ttgctatctt gctccgctgc
+    17341 tgtggcgtct gccgcaactg ggcatcgagt tcagcggccc gggtgcgaaa gagctgaaag
+    17401 gctatatgac ccgcgtcttt gagcgtgact ctttccttgc ttctttaact gaagcagaac
+    17461 gtgaaatgcg tctgggccgg agttaatctg tatggatttg tcacagctaa caccacgtcg
+    17521 tccctatctg ctgcgtgcat tctatgagtg gttgctggat aaccagctca cgccgcacct
+    17581 ggtggtggat gtgacgctcc ctggcgtgca ggttcctatg gaatatgcgc gtgacgggca
+    17641 aatcgtactc aacattgcgc cgcgtgctgt cggcaatctg gaactggcga atgatgaggt
+    17701 gcgctttaac gcgcgctttg gtggcattcc gcgtcaggtt tctgtgccgc tggctgccgt
+    17761 gctggctatc tacgcccgtg aaaatggcgc aggcacgatg tttgagcctg aagctgccta
+    17821 cgatgaagat accagcatca tgaatgatga agaggcatcg gcagacaacg aaaccgttat
+    17881 gtcggttatt gatggcgaca agccagatca cgatgatgac actcatcctg acgatgaacc
+    17941 tccgcagcca ccacgcggtg gtcgaccggc attacgcgtt gtgaagtaat acaaaacagg
+    18001 cccaggcggc ctgttttgtc tttttaatga cttaataaaa tagcgtgatt gtggcaatca
+    18061 tattcaccac gaaaccgact gccatgggga tcgctgtccg cttcaccacc gcaaaaggcg
+    18121 aaacgcctgc aattcctgac gtaacgacca ccaccgcagt aatcggcgaa accgcgcgcg
+    18181 ctagcgtcgt ggcaaaatgc atcggcataa tcattacaac cgctggtaca tgtagtccgg
+    18241 ctgcgatatt cggaataaga ctggcaaatg acataaacgg cgcattgcca gagcccatca
+    18301 caatggcaca aatggcaatg accagcgcca taataatcat cacgccaata ccgcccagac
+    18361 cagaatgctc cgcccccctg ataaccgcat cgacagtgcc aatcgtcgtt aagcctttcg
+    18421 caaatatttc acccgcgacc accagcgtta ccacgttggc aaactgcgta cccatgccgt
+    18481 caaaaaacgc ctgcacatcg tccattgttt cgcgcaagtt atgcttgcgg aagaactcaa
+    18541 caaacatcgt cacagtcaaa ctcagtaaca tcaccaccac cagatgcagt tctgactgca
+    18601 tcagcccgac gtgggcgagg aacagcgagc cgagcatcag gattaacggc atcacaggta
+    18661 aaatggcgta atagagcggc gggacattat cgagagcttt ttgctctgcc tgttcgtgat
+    18721 tgatattttt atcttttttg tcaaaagcgc gttgcacgaa aaagtgggag atcgccaccg
+    18781 agataatgac gcaagaggcg accggaagct ggtagtggaa gaagtatgtg gcaattttca
+    18841 ttcccgctac ctgggcagca aaaatggagt tcgtttccag aatcccccac tcaatggaca
+    18901 tcgtggttgc gataactgcc accgcagaga gacgacttac tcccagactc accagcgtcg
+    18961 gaaataaggt gaccatcagc aacataccca gaccggaggc gctggtaata aactgcgcca
+    19021 tgatttggcc gatgacgtaa gttgccgaca gaataatata cggcgagcga atgagtttta
+    19081 acgggcggct taacaagctc accatcgcgc gactggcccc tatgcgctcc atgtagcggg
+    19141 cataaccgcc caccgccata atcgacagcc ccaatccggc aatgcggttg gacagcatgc
+    19201 gcaggatttc attataaata tcgacgatca agtagccgct gcttttggtg ggatcgagta
+    19261 caccaccgaa ccctaaccag acaccgcaca tcatcaggaa gatacctgcg gcagccagca
+    19321 ccacctgagg tttgtagttt ttcaggatca aatagcccat cgtaattaat acgatgacag
+    19381 atataattat gccgaacatt gttgaactcc gtgtcaaaag aaaacggtca atcccataaa
+    19441 cggcagattg aaaacaacga tgttatattt tttgcaaggc tatttatggt gcggatgtcg
+    19501 tgtttttaat tgtaggtgag gtgatttttc attaaaaaat atgcgcttat gattattttg
+    19561 taagaacaca ttcataatat tcataatgct cgtgaatagt cttataaata attcaaacgg
+    19621 gatgttttta tctgcgttac attaattttt cgcaatagtt aattattccg ttaattatgg
+    19681 taatgatgag gcacaaagag aaaaccctgc cattttcccc tactttcaat cctgtgatag
+    19741 gatgtcactg atgatgttaa tcacactgac cttacagaat gggccttatg aacgcatttg
+    19801 attcgcaaac cgaagattct tcacctgcaa ttggtcgcaa cttgcgtagc cgcccgctgg
+    19861 cgcgtaaaaa actctccgaa atggtggaag aagagctgga acagatgatc cgccgtcgtg
+    19921 aatttggcga aggtgaacaa ttaccgtctg aacgcgaact gatggcgttc tttaacgtcg
+    19981 ggcgtccttc ggtgcgtgaa gcgctggcag cgttaaaacg caaaggtctg gtgcaaataa
+    20041 acaacggcga acgcgctcgc gtctcgcgtc cttctgcgga cactatcatc ggtgagcttt
+    20101 ccggcatggc gaaagatttc ctttctcatc ccggtgggat tgcccatttc gaacaattac
+    20161 gtctgttctt tgaatccagt ctggtgcgct atgcggctga acatgccacc gatgagcaaa
+    20221 tcgatttgct ggcaaaagca ctggaaatca acagtcagtc gctggataac aacgcggcat
+    20281 tcattcgttc agacgttgat ttccaccgcg tgctggcgga gatccccggt aacccaatct
+    20341 tcatggcgat ccacgttgcc ctgctcgact ggcttattgc cgcacgccca acggttaccg
+    20401 atcaggcact gcacgaacat aacaacgtta gttatcaaca gcatattgcg atcgttgatg
+    20461 cgatccgccg tcatgatcct gacgaagccg atcgtgcgtt gcaatcgcat ctcaacagcg
+    20521 tctctgctac ctggcacgct ttcggtcaga ccaccaacaa aaagaaataa tgccacttta
+    20581 gtgaagcaga tcgcattata agctttctgt atggggtgtt gcttaattga tctggtataa
+    20641 caggtataaa ggtatatcgt ttatcagaca agcatcactt cagaggtatt tatggcaacg
+    20701 aatttacgtg gcgtaatggc tgcactcctg actccttttg accaacaaca agcactggat
+    20761 aaagcgagtc tgcgtcgcct ggttcagttc aatattcagc agggcatcga cggtttatac
+    20821 gtgggtggtt cgaccggcga ggcctttgta caaagccttt ccgagcgtga acaggtactg
+    20881 gaaatcgtcg ccgaagaggc gaaaggtaag attaaactca tcgcccacgt cggttgcgt
+//
