@@ -354,6 +354,108 @@ def _format_primer_list_name(
     return f"{safe_plasmid}_{end_bp_1based}_{tm_str}_{direction}{ideal_mark}"
 
 
+def _escape_gff3_attr(value: object) -> str:
+    text = _safe_value(value)
+    return (
+        text.replace("\\", "\\\\")
+        .replace("&", "&amp;")
+        .replace(" ", "_")
+        .replace(";", r"\;")
+        .replace("=", r"\=")
+        .replace(",", r"\,")
+    )
+
+
+def _gff3_strand_value(strand: object) -> str:
+    if strand == 1:
+        return "+"
+    if strand == -1:
+        return "-"
+    return "."
+
+
+def _to_int_value(value: object, default: int = 0) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _build_interference_gff3(
+    interference_features: list[dict[str, object]],
+    seqid: str,
+    seq_len: int,
+) -> str:
+    if not interference_features:
+        return ""
+
+    lines: list[str] = [
+        "##gff-version 3",
+        f"##sequence-region {seqid} 1 {seq_len}",
+    ]
+    counters: dict[str, int] = {}
+
+    for item in interference_features:
+        if not isinstance(item, dict):
+            continue
+
+        feature_type = _safe_value(item.get("feature_type") or "interference_region") or "interference_region"
+        start = _to_int_value(item.get("start"))
+        end = _to_int_value(item.get("end"))
+        if start < 0:
+            start = 0
+        if end <= start:
+            continue
+
+        gff_start = start + 1
+        gff_end = end
+        strand = _gff3_strand_value(item.get("strand"))
+        score = item.get("score", ".")
+        source = _safe_value(item.get("source") or "primer_pipeline")
+
+        counters[feature_type] = counters.get(feature_type, 0) + 1
+        attr_id = f"{feature_type}_{counters[feature_type]}"
+        description = _safe_value(item.get("description"))
+        attrs = {
+            "ID": attr_id,
+            "Name": feature_type,
+            "source": source,
+        }
+        if description:
+            attrs["Note"] = description
+
+        extras = item.get("attributes")
+        if isinstance(extras, dict):
+            for key, value in extras.items():
+                escaped_key = _safe_value(key).replace(" ", "_")[:60] or "attr"
+                if not value and value != 0:
+                    continue
+                attrs[str(escaped_key)] = _safe_value(value)
+
+        attr_text = ";".join(
+            f"{_escape_gff3_attr(k)}={_escape_gff3_attr(v)}" for k, v in attrs.items()
+        )
+        lines.append(
+            "\t".join(
+                [
+                    seqid,
+                    source,
+                    feature_type,
+                    str(gff_start),
+                    str(gff_end),
+                    str(score if score is not None else "."),
+                    strand,
+                    ".",
+                    attr_text,
+                ]
+            )
+        )
+
+    if len(lines) == 2:
+        return "\n".join(lines)
+    return "\n".join(lines)
+
+
 def _build_primer_list_text(
     primer_candidates: list[dict[str, object]],
     mode: str,
@@ -531,6 +633,30 @@ st.download_button(
     mime="application/octet-stream",
     use_container_width=True,
 )
+
+st.subheader("추가 feature GFF3 다운로드 (프라이머 제외)")
+interference_regions = result.get("interference_regions") or []
+if not isinstance(interference_regions, list):
+    interference_regions = []
+if interference_regions:
+    interference_gff3 = _build_interference_gff3(
+        [item for item in interference_regions if isinstance(item, dict)],
+        str(result.get("record_name") or result.get("record_id") or "primer"),
+        int(meta.get("sequence_length", 0)),
+    )
+    interference_filename = f"{_safe_value(result.get('record_name') or result.get('record_id') or 'primer')}_interference_features.gff3"
+    interference_filename = "".join(c for c in interference_filename if c.isalnum() or c in ("_", "-", ".", " ")).replace(" ", "_")
+    st.download_button(
+        label="간섭 feature GFF3 다운로드",
+        data=interference_gff3,
+        file_name=interference_filename,
+        mime="text/gff3",
+        use_container_width=True,
+    )
+    with st.expander("추가 feature GFF3 미리보기 (상위 20줄)"):
+        st.text("\n".join(interference_gff3.splitlines()[:20]) if interference_gff3 else "(데이터 없음)")
+else:
+    st.info("현재 결과에서 추가 feature(간섭 영역)가 없어 GFF3 파일을 만들지 않습니다.")
 
 st.subheader("프라이머 리스트 다운로드")
 primer_candidates = result.get("primer_candidates") or []
