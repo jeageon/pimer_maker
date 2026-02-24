@@ -20,6 +20,7 @@ from ..config import (
     DEFAULT_GC_MIN,
     DEFAULT_MANUAL_HAIRPIN_MAX_K,
     DEFAULT_MANUAL_HAIRPIN_MIN_K,
+    DEFAULT_MANUAL_SELF_DIMER_EXCLUDE_IDENTICAL_WINDOW,
     DEFAULT_MANUAL_OFFTARGET_SEED_LEN,
     DEFAULT_MANUAL_OFFTARGET_SEED_WARNING_LIMIT,
     DEFAULT_MANUAL_PAIR_DIMER_MAX_OVERLAP,
@@ -116,6 +117,7 @@ def run_primer_pipeline(
     interference_repeat_at: int = DEFAULT_INTERFERENCE_HOMOPOLYMER_AT,
     interference_repeat_gc: int = DEFAULT_INTERFERENCE_HOMOPOLYMER_GC,
     include_input_features: bool = True,
+    self_dimer_exclude_identical_window: bool = DEFAULT_MANUAL_SELF_DIMER_EXCLUDE_IDENTICAL_WINDOW,
 ) -> dict[str, Any]:
     """Run GB upload -> interference mapping -> primer scan pipeline."""
     parse_candidates = list(_iter_decoded_texts(gb_bytes))
@@ -194,6 +196,7 @@ def run_primer_pipeline(
         ideal_repeat_unit_limit=ideal_repeat_unit_limit,
         repeat_run_limit=repeat_run_limit,
         max_candidates=max_candidates,
+        self_dimer_exclude_identical_window=self_dimer_exclude_identical_window,
     )
 
     run_id = hashlib.sha1(gb_bytes).hexdigest()[:10]
@@ -224,6 +227,7 @@ def run_primer_pipeline(
         "product_size_range": [product_min, product_max],
         "interference_count": len(interference),
         "interference_by_type": _count_by_feature_type(interference),
+        "self_dimer_exclude_identical_window": self_dimer_exclude_identical_window,
         "primer_candidate_count": len(primer_candidates),
         "primer_ideal_count": sum(1 for item in primer_candidates if item.is_ideal),
         "input_record_count": record_count,
@@ -389,6 +393,7 @@ def find_candidates(
     max_candidates: Optional[int],
     self_dimer_min_overlap: int = DEFAULT_MANUAL_SELF_DIMER_MIN_OVERLAP,
     self_dimer_max_overlap: int = DEFAULT_MANUAL_SELF_DIMER_MAX_OVERLAP,
+    self_dimer_exclude_identical_window: bool = DEFAULT_MANUAL_SELF_DIMER_EXCLUDE_IDENTICAL_WINDOW,
 ) -> list[PrimerCandidate]:
     if len_min < 12:
         len_min = 12
@@ -422,6 +427,8 @@ def find_candidates(
                 template_window,
                 min_overlap=self_dimer_min_overlap,
                 max_overlap=self_dimer_max_overlap,
+                full_sequence_scan=True,
+                allow_identical_window_match=not self_dimer_exclude_identical_window,
             ):
                 continue
 
@@ -557,6 +564,7 @@ def validate_primer_pair(
     pair_dimer_require_3p: bool = DEFAULT_MANUAL_REQUIRE_3P_DIMER,
     offtarget_seed_len: int = DEFAULT_MANUAL_OFFTARGET_SEED_LEN,
     offtarget_seed_warning_limit: int = DEFAULT_MANUAL_OFFTARGET_SEED_WARNING_LIMIT,
+    self_dimer_exclude_identical_window: bool = DEFAULT_MANUAL_SELF_DIMER_EXCLUDE_IDENTICAL_WINDOW,
     tm_target: float,
     tm_tolerance: float,
 ) -> dict[str, Any]:
@@ -644,6 +652,8 @@ def validate_primer_pair(
         forward,
         min_overlap=self_dimer_min_overlap,
         max_overlap=self_dimer_max_overlap,
+        full_sequence_scan=True,
+        allow_identical_window_match=not self_dimer_exclude_identical_window,
     )
     if forward_self_dimer:
         interference_errors.append("forward primer is likely to form self-dimer")
@@ -665,6 +675,8 @@ def validate_primer_pair(
         reverse,
         min_overlap=self_dimer_min_overlap,
         max_overlap=self_dimer_max_overlap,
+        full_sequence_scan=True,
+        allow_identical_window_match=not self_dimer_exclude_identical_window,
     )
     if reverse_self_dimer:
         interference_errors.append("reverse primer is likely to form self-dimer")
@@ -1404,6 +1416,8 @@ def _self_dimer_risk(sequence: str, *, min_overlap: int = 4, max_overlap: int = 
         sequence,
         min_overlap=min_overlap,
         max_overlap=max_overlap,
+        full_sequence_scan=True,
+        allow_identical_window_match=not DEFAULT_MANUAL_SELF_DIMER_EXCLUDE_IDENTICAL_WINDOW,
     ) is not None
 
 
@@ -1431,6 +1445,8 @@ def _pair_dimer_overlap_info(
     min_overlap: int = 4,
     max_overlap: int = 7,
     require_3p: bool = False,
+    full_sequence_scan: bool = False,
+    allow_identical_window_match: bool = True,
 ) -> Optional[dict[str, Any]]:
     a = seq_a.upper()
     b = seq_b.upper()
@@ -1447,6 +1463,62 @@ def _pair_dimer_overlap_info(
         check_a_start = max(0, len(b) - 2 * max_len)
         check_b_start = max(0, len(a) - 2 * max_len)
     for k in range(min_overlap, max_len + 1):
+        if full_sequence_scan:
+            for start_a in range(len(a) - k + 1):
+                a_seg = a[start_a : start_a + k]
+                a_seg_rc = str(Seq(a_seg).reverse_complement())
+                start_b = b.find(a_seg_rc)
+                while start_b >= 0:
+                    if (
+                        not allow_identical_window_match
+                        and start_b == start_a
+                        and start_b + k <= len(b)
+                        and a[start_a : start_a + k] == b[start_b : start_b + k]
+                    ):
+                        start_b = b.find(a_seg_rc, start_b + 1)
+                        continue
+                    if not require_3p or (start_a + k >= len(a) - max_len and start_b + k >= len(b) - max_len):
+                        return {
+                            "overlap_len": k,
+                            "a_tail": a_seg,
+                            "b_tail": b[start_b : start_b + k],
+                            "match_seq": a_seg_rc,
+                            "paired_index_in_a": start_a,
+                            "paired_index_in_b": start_b,
+                            "match_in": "b",
+                            "pairing": "a_seg_to_b",
+                        }
+                    next_pos = b.find(a_seg_rc, start_b + 1)
+                    start_b = next_pos
+
+            for start_b in range(len(b) - k + 1):
+                b_seg = b[start_b : start_b + k]
+                b_seg_rc = str(Seq(b_seg).reverse_complement())
+                start_a = a.find(b_seg_rc)
+                while start_a >= 0:
+                    if (
+                        not allow_identical_window_match
+                        and start_a == start_b
+                        and start_a + k <= len(a)
+                        and a[start_a : start_a + k] == b[start_b : start_b + k]
+                    ):
+                        start_a = a.find(b_seg_rc, start_a + 1)
+                        continue
+                    if not require_3p or (start_a + k >= len(a) - max_len and start_b + k >= len(b) - max_len):
+                        return {
+                            "overlap_len": k,
+                            "a_tail": a[start_a : start_a + k],
+                            "b_tail": b_seg,
+                            "match_seq": b_seg_rc,
+                            "paired_index_in_a": start_a,
+                            "paired_index_in_b": start_b,
+                            "match_in": "a",
+                            "pairing": "b_seg_to_a",
+                        }
+                    next_pos = a.find(b_seg_rc, start_a + 1)
+                    start_a = next_pos
+            continue
+
         a_tail = a[-k:]
         b_tail = b[-k:]
         a_tail_rc = str(Seq(a_tail).reverse_complement())

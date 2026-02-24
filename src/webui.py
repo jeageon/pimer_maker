@@ -10,6 +10,7 @@ from src.config import (
     DEFAULT_MANUAL_HAIRPIN_MAX_K,
     DEFAULT_MANUAL_HAIRPIN_MIN_K,
     DEFAULT_MANUAL_OFFTARGET_SEED_LEN,
+    DEFAULT_MANUAL_SELF_DIMER_EXCLUDE_IDENTICAL_WINDOW,
     DEFAULT_MANUAL_OFFTARGET_SEED_WARNING_LIMIT,
     DEFAULT_MANUAL_PAIR_DIMER_MAX_OVERLAP,
     DEFAULT_MANUAL_PAIR_DIMER_MIN_OVERLAP,
@@ -319,6 +320,11 @@ with st.form("design_form"):
         value=False,
         help="체크하면 CDS/promoter 등 기존 어노테이션 구간에서 프라이머 후보를 제외합니다.",
     )
+    self_dimer_exclude_identical_window = st.checkbox(
+        "Exclude identical-window self-dimer matches (reduce false positives)",
+        value=DEFAULT_MANUAL_SELF_DIMER_EXCLUDE_IDENTICAL_WINDOW,
+        help="When enabled, identical self-alignment at the same position is ignored in self-dimer filtering.",
+    )
 
     run_btn = st.form_submit_button("프라이머 설계 실행")
 
@@ -357,6 +363,7 @@ if run_btn:
                 gc_clamp_min=int(clamp_min),
                 gc_clamp_max=int(clamp_max),
                 include_input_features=bool(include_input_features),
+                self_dimer_exclude_identical_window=bool(self_dimer_exclude_identical_window),
             )
         except Exception as exc:
             _render_result_message(f"실행 실패: {exc}", "error")
@@ -466,6 +473,11 @@ with st.expander("쌍 간섭 검사 고급 설정 (수동 검증)"):
             DEFAULT_MANUAL_SELF_DIMER_MAX_OVERLAP,
             1,
         )
+        pair_self_dimer_exclude_identical_window = st.checkbox(
+            "Exclude identical-window self-dimer matches (reduce false positives)",
+            value=DEFAULT_MANUAL_SELF_DIMER_EXCLUDE_IDENTICAL_WINDOW,
+            help="When enabled, identical self-alignment at the same position is ignored in self-dimer validation.",
+        )
 
     hc5, hc6 = st.columns(2)
     with hc5:
@@ -537,6 +549,7 @@ if st.button("쌍 검증"):
         pair_dimer_min_overlap=int(pair_cross_dimer_min_overlap),
         pair_dimer_max_overlap=int(pair_cross_dimer_max_overlap),
         pair_dimer_require_3p=bool(pair_3p_anchor_only),
+        self_dimer_exclude_identical_window=bool(pair_self_dimer_exclude_identical_window),
         offtarget_seed_len=int(pair_offtarget_seed_len),
         offtarget_seed_warning_limit=int(pair_offtarget_seed_warning_limit),
         tm_target=float(tm_target),
