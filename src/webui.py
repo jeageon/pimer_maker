@@ -102,6 +102,60 @@ def _extract_filter_summary_rows(filter_summary: object) -> list[dict[str, str]]
     ]
 
 
+def _message_level(message: str) -> str:
+    normalized = message.lower()
+    if any(
+        token in normalized
+        for token in (
+            "실패",
+            "error",
+            "오류",
+            "not valid",
+            "no valid",
+            "없다",
+            "없습니다",
+            "초과",
+            "위험",
+            "실패했습니다",
+            "not found",
+            "invalid",
+            "required",
+            "must",
+            "needs",
+        )
+    ):
+        return "error"
+    if any(
+        token in normalized
+        for token in (
+            "주의",
+            "경고",
+            "warning",
+            "일부",
+            "부분",
+            "부분적으로",
+            "warning",
+            "제한",
+            "완화",
+            "권장",
+            "확인",
+        )
+    ):
+        return "warning"
+    return "info"
+
+
+def _render_result_message(message: str, level: str | None = None) -> None:
+    text = _dual_lang_text(message)
+    severity = level or _message_level(text)
+    if severity == "error":
+        st.error(f"[실패] {text}")
+    elif severity == "warning":
+        st.warning(f"[주의] {text}")
+    else:
+        st.info(f"[안내] {text}")
+
+
 def _render_filter_status(filter_summary: dict[str, object]) -> None:
     if not filter_summary:
         return
@@ -112,25 +166,25 @@ def _render_filter_status(filter_summary: dict[str, object]) -> None:
     off_target = int(filter_summary.get("off_target_pairs", 0) or 0)
 
     if opposite <= 0:
-        st.error("반대가닥 결합쌍이 없습니다.")
+        _render_result_message("반대가닥 결합쌍이 없습니다.", "error")
     if skipped_size == opposite and opposite > 0:
-        st.error("Amplicon 크기 조건에서 모든 반대가닥 결합쌍이 제외되었습니다.")
+        _render_result_message("Amplicon 크기 조건에서 모든 반대가닥 결합쌍이 제외되었습니다.", "error")
     elif skipped_size > 0:
-        st.warning(f"Amplicon 크기 조건에서 {skipped_size}개가 제외되었습니다.")
+        _render_result_message(f"Amplicon 크기 조건에서 {skipped_size}개가 제외되었습니다.", "warning")
 
     if skipped_dimer == opposite and opposite > 0:
-        st.error("이량체 위험 필터에서 반대가닥 결합쌍이 모두 제외되었습니다.")
+        _render_result_message("이량체 위험 필터에서 반대가닥 결합쌍이 모두 제외되었습니다.", "error")
     elif skipped_dimer > 0:
-        st.warning(f"이량체 위험 필터에서 {skipped_dimer}개가 제외되었습니다.")
+        _render_result_message(f"이량체 위험 필터에서 {skipped_dimer}개가 제외되었습니다.", "warning")
 
     if off_target and opposite > 0:
         if off_target >= opposite:
-            st.error("오프타겟 경고가 전체 결합쌍에서 높은 수준으로 감지되었습니다.")
+            _render_result_message("오프타겟 경고가 전체 결합쌍에서 높은 수준으로 감지되었습니다.", "error")
         else:
-            st.warning(f"오프타겟 경고가 {off_target}개 결합쌍에서 감지되었습니다.")
+            _render_result_message(f"오프타겟 경고가 {off_target}개 결합쌍에서 감지되었습니다.", "warning")
 
     if total > 0 and opposite <= 0 and skipped_size == 0 and skipped_dimer == 0:
-        st.warning("same-strand 결합만 존재해 유효한 증폭 쌍을 만들지 못했습니다.")
+        _render_result_message("same-strand 결합만 존재해 유효한 증폭 쌍을 만들지 못했습니다.", "warning")
 
 
 def _render_interference_details(interference_details: object) -> None:
@@ -271,18 +325,18 @@ with st.form("design_form"):
 
 if not run_btn and previous_result is None:
     if not uploaded_file:
-        st.info("GenBank 파일을 업로드하고 실행 버튼을 눌러 주세요.")
+        _render_result_message("GenBank 파일을 업로드하고 실행 버튼을 눌러 주세요.", "info")
     st.stop()
 
 if run_btn and not uploaded_file:
-    st.error("GenBank 파일이 필요합니다.")
+    _render_result_message("GenBank 파일이 필요합니다.", "error")
     st.stop()
 
 if run_btn and gc_min > gc_max:
-    st.error("GC min은 GC max보다 작아야 합니다.")
+    _render_result_message("GC min은 GC max보다 작아야 합니다.", "error")
     st.stop()
 if run_btn and len_min > len_max:
-    st.error("최소 길이는 최대 길이보다 작아야 합니다.")
+    _render_result_message("최소 길이는 최대 길이보다 작아야 합니다.", "error")
     st.stop()
 
 if run_btn:
@@ -305,11 +359,11 @@ if run_btn:
                 include_input_features=bool(include_input_features),
             )
         except Exception as exc:
-            st.error(f"실행 실패: {exc}")
+            _render_result_message(f"실행 실패: {exc}", "error")
             st.exception(exc)
             st.stop()
         if not isinstance(result, dict) or not isinstance(result.get("metadata"), dict):
-            st.error("설계 결과가 올바른 형식이 아닙니다.")
+            _render_result_message("설계 결과가 올바른 형식이 아닙니다.", "error")
             st.stop()
         st.session_state["last_result"] = result
 else:
@@ -319,13 +373,13 @@ else:
     else:
         result = None
 if result is None:
-    st.error("설계 결과가 없습니다. 먼저 '프라이머 설계 실행'을 눌러 결과를 생성해 주세요.")
+    _render_result_message("설계 결과가 없습니다. 먼저 '프라이머 설계 실행'을 눌러 결과를 생성해 주세요.", "error")
     st.stop()
 
 st.success("설계 완료")
 result = _normalize_primer_result(result)
 if result is None:
-    st.error("저장된 결과 포맷이 손상되었습니다. 다시 설계를 실행해 주세요.")
+    _render_result_message("저장된 결과 포맷이 손상되었습니다. 다시 설계를 실행해 주세요.", "error")
     st.stop()
 meta = result["metadata"]
 lcol, rcol = st.columns(2)
@@ -357,7 +411,7 @@ primer_candidates = result.get("primer_candidates")
 if primer_candidates:
     st.dataframe(primer_candidates[:50], use_container_width=True, hide_index=True)
 else:
-    st.warning("조건을 만족하는 후보가 없습니다. 조건을 완화해 보세요.")
+    _render_result_message("조건을 만족하는 후보가 없습니다. 조건을 완화해 보세요.", "warning")
 
 
 st.divider()
@@ -452,22 +506,22 @@ with st.expander("쌍 간섭 검사 고급 설정 (수동 검증)"):
 
 if st.button("쌍 검증"):
     if product_min >= product_max:
-        st.error("Amplicon 최소 크기는 최대 크기보다 작아야 합니다.")
+        _render_result_message("Amplicon 최소 크기는 최대 크기보다 작아야 합니다.", "error")
         st.stop()
     if not forward_input.strip() or not reverse_input.strip():
-        st.error("두 프라이머 시퀀스를 모두 입력하세요.")
+        _render_result_message("두 프라이머 시퀀스를 모두 입력하세요.", "error")
         st.stop()
     if pair_hairpin_min_k > pair_hairpin_max_k:
-        st.error("Hairpin min k는 max k보다 클 수 없습니다.")
+        _render_result_message("Hairpin min k는 max k보다 클 수 없습니다.", "error")
         st.stop()
     if pair_self_dimer_min_overlap > pair_self_dimer_max_overlap:
-        st.error("Self-dimer overlap min은 max보다 클 수 없습니다.")
+        _render_result_message("Self-dimer overlap min은 max보다 클 수 없습니다.", "error")
         st.stop()
     if pair_cross_dimer_min_overlap > pair_cross_dimer_max_overlap:
-        st.error("Cross-dimer overlap min은 max보다 클 수 없습니다.")
+        _render_result_message("Cross-dimer overlap min은 max보다 클 수 없습니다.", "error")
         st.stop()
     if pair_offtarget_seed_len < 4:
-        st.error("오프타겟 seed 길이는 4 이상으로 입력해야 합니다.")
+        _render_result_message("오프타겟 seed 길이는 4 이상으로 입력해야 합니다.", "error")
         st.stop()
     check = validate_primer_pair(
         sequence=result["sequence"],
@@ -489,17 +543,11 @@ if st.button("쌍 검증"):
         tm_tolerance=float(tm_tolerance),
     )
     if not check["valid"]:
-        st.error("검증 실패")
+        _render_result_message("검증 실패", "error")
         _render_interference_details(check.get("interference_details"))
         with st.expander("검증 결과 상세", expanded=True):
             for msg in check.get("summary_messages", []):
-                translated = _dual_lang_text(str(msg))
-                if "오류" in translated:
-                    st.error(translated)
-                elif "제외" in str(msg) or "표시" in str(msg) or "임계값" in str(msg):
-                    st.warning(translated)
-                else:
-                    st.info(translated)
+                _render_result_message(str(msg))
             filter_summary = check.get("filter_summary")
             if filter_summary:
                 st.subheader("필터 요약")
@@ -515,17 +563,13 @@ if st.button("쌍 검증"):
                     st.caption(f"오프타겟 시드 예시(앞->뒤): {off_target_examples[:10]}")
                 st.json(filter_summary)
         for msg in check.get("errors", []):
-            st.error(_dual_lang_text(str(msg)))
+            _render_result_message(str(msg), "error")
     else:
         st.success("조건 통과")
         _render_interference_details(check.get("interference_details"))
         with st.expander("검증 결과 상세", expanded=False):
             for msg in check.get("summary_messages", []):
-                translated = _dual_lang_text(str(msg))
-                if "제외" in str(msg) or "경고" in str(msg) or "오류" in str(msg):
-                    st.warning(translated)
-                else:
-                    st.info(translated)
+                _render_result_message(str(msg))
             filter_summary = check.get("filter_summary")
             if filter_summary:
                 st.subheader("필터 요약")
@@ -542,11 +586,7 @@ if st.button("쌍 검증"):
                 st.json(filter_summary)
         if check.get("warnings"):
             for msg in check.get("warnings"):
-                translated = _dual_lang_text(str(msg))
-                if "Tm" in str(msg):
-                    st.warning(translated)
-                else:
-                    st.info(translated)
+                _render_result_message(str(msg), "warning")
         st.dataframe(check["pairs"], use_container_width=True, hide_index=True)
 
 with st.expander("실행 메타데이터"):
