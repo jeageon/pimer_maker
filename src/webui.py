@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from src.config import (
     DEFAULT_GC_CLAMP_MAX,
     DEFAULT_GC_CLAMP_MIN,
@@ -54,6 +56,7 @@ def _dual_lang_text(message: str) -> str:
         "both forward and reverse primer sequences are required": "정방향/역방향 프라이머 시퀀스가 모두 필요합니다.",
         "primers must contain only A/C/G/T/N characters": "프라이머에 허용되지 않는 문자가 포함되어 있습니다. A/C/G/T/N만 허용됩니다.",
         "failed to calculate Tm": "Tm 계산에 실패했습니다.",
+        "Tm gap too large": "정방향/역방향 Tm 차이가 허용치보다 큽니다.",
         "forward primer is likely to form hairpin": "정방향 프라이머가 hairpin(자체 접힘) 위험이 높습니다.",
         "reverse primer is likely to form hairpin": "역방향 프라이머가 hairpin(자체 접힘) 위험이 높습니다.",
         "forward primer is likely to form self-dimer": "정방향 프라이머가 self-dimer(자체 이량체) 위험이 높습니다.",
@@ -71,10 +74,14 @@ def _dual_lang_text(message: str) -> str:
         "forward/reverse binding sites are on the same strand; reverse primer may need reverse-complement input": "정방향/역방향 결합 위치가 동일 가닥입니다. 역방향 프라이머는 상보서열(reverse complement)로 입력이 필요할 수 있습니다.",
         "forward_tm_outside_target_": "정방향 Tm이 목표 범위를 벗어났습니다.",
         "reverse_tm_outside_target_": "역방향 Tm이 목표 범위를 벗어났습니다.",
-        "Tm gap too large": "정방향/역방향 Tm 차이가 허용치보다 큽니다.",
         "Tm gap": "Tm 차이",
         "exceeds tolerance": "허용 Tm 오차를 초과했습니다.",
         "outside target": "목표 Tm 범위를 벗어났습니다.",
+        "no candidate pairs passed quality filters": "모든 후보 쌍이 간섭/오차 기준을 통과하지 못했습니다.",
+        "pair": "쌍(Forward/Reverse)",
+        "pair binding positions are too short": "쿼리 간 접촉이 짧아 신뢰성이 낮습니다.",
+        "forward primer has no perfect match in template": "정방향 프라이머가 템플릿에서 완전 일치 위치를 찾지 못했습니다.",
+        "reverse primer has no perfect match in template": "역방향 프라이머가 템플릿에서 완전 일치 위치를 찾지 못했습니다.",
     }
     for key, value in translations.items():
         if message == key or message.startswith(key):
@@ -130,16 +137,100 @@ def _render_interference_details(interference_details: object) -> None:
     if not isinstance(interference_details, list) or not interference_details:
         return
 
-    rows = []
+    rows: list[dict[str, str]] = []
+
     for item in interference_details:
-        if isinstance(item, dict):
-            rows.append(item)
+        if not isinstance(item, dict):
+            continue
+
+        scope = str(item.get("scope", ""))
+        inter_type = str(item.get("type", ""))
+        primer_type = str(item.get("primer", ""))
+
+        if scope == "single_primer":
+            target = "정방향" if primer_type == "forward" else "역방향"
+            if inter_type == "hairpin":
+                rows.append(
+                    {
+                        "대상": target,
+                        "간섭 유형": "자기접힘(헤어핀)",
+                        "설명": f"{target} 말단이 내부 서열과 상보적으로 접힘 (길이 {item.get('overlap_len')}nt)",
+                        "프라이머 말단": str(item.get("primer_tail", "")),
+                        "내부 매칭 서열": str(item.get("internal_match", "")),
+                        "내부 위치(0-base)": str(item.get("match_index", "")),
+                    }
+                )
+            elif inter_type == "self_dimer":
+                rows.append(
+                    {
+                        "대상": target,
+                        "간섭 유형": "자기이량체",
+                        "설명": f"같은 프라이머끼리 보체 결합 가능성 존재 (겹침 {item.get('overlap_len')}nt)",
+                        "프라이머 말단": str(item.get("primer_tail", "")),
+                        "상보 매칭": str(item.get("complement_match", "")),
+                        "매칭 위치(0-base)": str(item.get("paired_index", "")),
+                    }
+                )
+            else:
+                rows.append({"대상": target, "간섭 유형": str(inter_type), "설명": json_like(item)})
+
+        elif scope == "pair":
+            if inter_type == "cross_dimer":
+                rows.append(
+                    {
+                        "대상": "쌍(Forward/Reverse)",
+                        "간섭 유형": "이량체(cross-dimer)",
+                        "설명": f"Forward/Reverse 사이 상보 결합 가능 (겹침 {item.get('overlap_len')}nt)",
+                        "Forward 위치(0-base)": str(item.get("forward_pos", "")),
+                        "Reverse 위치(0-base)": str(item.get("reverse_pos", "")),
+                        "Forward 말단": str(item.get("a_tail", "")),
+                        "Reverse 말단": str(item.get("b_tail", "")),
+                    }
+                )
+            elif inter_type == "off_target":
+                rows.append(
+                    {
+                        "대상": "쌍(Forward/Reverse)",
+                        "간섭 유형": "오프타겟 시드",
+                        "설명": f"seed_len={item.get('seed_len', '')}, Forward/Reverse seed_hits={item.get('forward_seed_hits', '')}/{item.get('reverse_seed_hits', '')}",
+                        "Forward seed": str(item.get("forward_seed", "")),
+                        "Reverse seed": str(item.get("reverse_seed", "")),
+                    }
+                )
+            elif inter_type == "tm_gap":
+                rows.append(
+                    {
+                        "대상": "쌍(Forward/Reverse)",
+                        "간섭 유형": "Tm 차이 과다",
+                        "설명": f"ΔTm={float(item.get('gap', 0.0)):.2f}°C (허용치 {item.get('limit', 0.0)}°C)",
+                        "forward Tm": str(item.get("forward_tm", "")),
+                        "reverse Tm": str(item.get("reverse_tm", "")),
+                    }
+                )
+            elif inter_type == "binding_miss":
+                rows.append(
+                    {
+                        "대상": "쌍(Forward/Reverse)",
+                        "간섭 유형": "결합 실패",
+                        "설명": f"{'정방향' if primer_type == 'forward' else '역방향'} 프라이머가 템플릿에서 매칭되지 않음",
+                    }
+                )
+            else:
+                rows.append({"대상": "쌍(Forward/Reverse)", "간섭 유형": str(inter_type), "설명": json_like(item)})
+        else:
+            rows.append({"대상": "-", "간섭 유형": str(inter_type or scope), "설명": json_like(item)})
 
     if not rows:
         return
 
     st.subheader("간섭 시퀀스 상세")
     st.dataframe(rows[:20], use_container_width=True, hide_index=True)
+
+
+def json_like(value: Any) -> str:
+    if isinstance(value, dict):
+        return ", ".join(f"{k}={v}" for k, v in value.items())
+    return str(value)
 
 with st.form("design_form"):
     st.subheader("설계 조건")

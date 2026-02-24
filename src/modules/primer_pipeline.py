@@ -569,6 +569,7 @@ def validate_primer_pair(
         return {
             "valid": False,
             "errors": ["both forward and reverse primer sequences are required"],
+            "interference_details": [],
             "pairs": [],
         }
 
@@ -576,6 +577,7 @@ def validate_primer_pair(
         return {
             "valid": False,
             "errors": ["primers must contain only A/C/G/T/N characters"],
+            "interference_details": [],
             "pairs": [],
         }
 
@@ -585,6 +587,7 @@ def validate_primer_pair(
         return {
             "valid": False,
             "errors": ["failed to calculate Tm"],
+            "interference_details": [],
             "pairs": [],
         }
 
@@ -592,6 +595,16 @@ def validate_primer_pair(
         return {
             "valid": False,
             "errors": [f"Tm gap too large ({abs(forward_tm - reverse_tm):.2f}): exceeds failure limit {tm_gap_fail:.2f}"],
+            "interference_details": [
+                {
+                    "scope": "pair",
+                    "type": "tm_gap",
+                    "forward_tm": forward_tm,
+                    "reverse_tm": reverse_tm,
+                    "gap": abs(forward_tm - reverse_tm),
+                    "limit": tm_gap_fail,
+                }
+            ],
             "pairs": [],
         }
 
@@ -672,6 +685,7 @@ def validate_primer_pair(
         return {
             "valid": False,
             "errors": interference_errors,
+            "interference_details": list(interference_details),
             "pairs": [],
         }
 
@@ -681,12 +695,28 @@ def validate_primer_pair(
         return {
             "valid": False,
             "errors": ["forward primer does not match template"],
+            "interference_details": [
+                {
+                    "scope": "pair",
+                    "type": "binding_miss",
+                    "primer": "forward",
+                    "message": "forward primer has no perfect match in template",
+                }
+            ],
             "pairs": [],
         }
     if not r_hits:
         return {
             "valid": False,
             "errors": ["reverse primer does not match template"],
+            "interference_details": [
+                {
+                    "scope": "pair",
+                    "type": "binding_miss",
+                    "primer": "reverse",
+                    "message": "reverse primer has no perfect match in template",
+                }
+            ],
             "pairs": [],
         }
 
