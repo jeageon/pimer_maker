@@ -17,12 +17,21 @@ if "%1"=="--help" (
     echo Example:
     echo   %~nx0
     echo   %~nx0 "%%USERPROFILE%%\\AppData\\Local\\PrimerMaker"
+    echo.
+    echo If no argument is provided, you can type a path directly in prompt.
     pause
     exit /b 0
 )
 
 if "%~1"=="" (
     set "INSTALL_DIR=%ProgramFiles%\%APP_NAME%"
+    echo.
+    echo Press Enter to use default path, or type install directory directly:
+    echo [%INSTALL_DIR%]
+    set /p "USER_INPUT=Install directory: "
+    if not "%USER_INPUT%"=="" (
+        set "INSTALL_DIR=%USER_INPUT%"
+    )
 ) else (
     set "INSTALL_DIR=%~1"
 )
