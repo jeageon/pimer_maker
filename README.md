@@ -23,20 +23,7 @@ python -m streamlit run src/webui.py
 ./scripts/launch_primer_webui.command
 ```
 
-### Windows (설치형 / 실행형)
-
-#### 1) 추천: 설치형 실행
-
-1. GitHub에서 릴리스 산출물을 내려받습니다.
-2. 압축 해제 후 `release\pimer_maker_release\install_primer_maker.bat` 실행.
-3. 기본 경로(Program Files) 또는 사용자 폴더에 설치 후 바탕화면 바로가기가 생성됩니다.
-4. 바탕화면의 `Primer Maker.lnk`를 실행하세요.
-
-#### 2) 포터블 실행(설치 생략)
-
-1. `release\pimer_maker_release\PrimerMaker.exe` 더블클릭
-
-#### 3) 개발용 직접 실행
+### Windows (더블클릭 실행)
 
 1. `scripts\launch_primer_webui.bat` 실행
 2. Python 3.10+가 설치되어 있는지 확인
@@ -95,7 +82,6 @@ git push -u origin main
 - `scripts\prepare_release_windows.bat` 실행
 - 결과: `release\pimer_maker_release\`
   - `PrimerMaker.exe` : 더블클릭으로 실행되는 실행 파일
-  - `install_primer_maker.bat` : 설치 마법사(더블클릭 설치용)
   - `PrimerMaker.ico` : 실행 아이콘
   - `source\` : 전체 소스 코드가 포함된 폴더
   - `source\README.md` 와 `requirements.txt`, `src`, `scripts`, `tests`, `data` 포함
