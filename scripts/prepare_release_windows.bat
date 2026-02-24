@@ -62,7 +62,7 @@ cd /d "%PROJECT_DIR%"
 rmdir /s /q "%PROJECT_DIR%\build" >nul 2>&1
 rmdir /s /q "%PROJECT_DIR%\dist" >nul 2>&1
 
-"%PYTHON_EXE%" -m PyInstaller --noconfirm --onefile --name %APP_NAME% %ICON_ARG% src\webui.py
+"%PYTHON_EXE%" -m PyInstaller --noconfirm --onefile --name %APP_NAME% --collect-all streamlit %ICON_ARG% src\webui.py
 
 if not exist "%PROJECT_DIR%\dist\%APP_NAME%.exe" (
   echo [ERROR] exe 생성 실패.

@@ -41,7 +41,7 @@ jobs:
             $stream.Close()
           }
 
-          pyinstaller --noconfirm --onefile --name PrimerMaker --windowed --icon resources\\primer_maker.ico src\\webui.py
+          pyinstaller --noconfirm --onefile --name PrimerMaker --windowed --collect-all streamlit --icon resources\\primer_maker.ico src\\webui.py
 
       - name: Prepare release package
         shell: pwsh
