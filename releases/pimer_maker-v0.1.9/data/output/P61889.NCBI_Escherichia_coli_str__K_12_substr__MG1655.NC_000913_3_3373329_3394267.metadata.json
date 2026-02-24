@@ -1,0 +1,34 @@
+{
+  "uniprot_id": "P61889",
+  "ensembl_gene_id": "mdh",
+  "coordinate_source": "ncbi",
+  "ncbi_accession": "NC_000913.3",
+  "assembly": "NCBI Escherichia coli str. K-12 substr. MG1655",
+  "region": "NC_000913.3:3373329-3394267:-1",
+  "flank_bp": 10000,
+  "flank_mode": "genomic",
+  "mask": "soft",
+  "api_cache": true,
+  "options": {
+    "maf_threshold": 0.01,
+    "gc_window": 50,
+    "gc_step": 10,
+    "gc_min": 30.0,
+    "gc_max": 70.0,
+    "homopolymer_at": 5,
+    "homopolymer_gc": 4
+  },
+  "warnings": [
+    "microbial mode: attempting NCBI-first resolution",
+    "NCBI fallback: collected RefSeq/EMBL accession hints: AF004170, AF004171, AF004172, AF004173, AF004174, AF004175, AF004176, AF004177, AF004179, AF004180, AF004182, AF004183, AF004184, AF004186, AF004187, AF004188, AF004190, AF004191, AF004195, AF004196, AF004199, AF004200, AF004201, AF004202, AF004203, AF004204, AF004205, AF004206, AF004207, AF004208, AF004209, AF091758, AF091759, AF091760, AF091761, AF091762, AF091763, AF091764, AF091765, AF091766, AF091767, AF091768, AF091769, AF091770, AF091771, AF091772, AF091773, AF091774, AF091775, AF091776, AF091777, AF091778, AP009048, M10417, NC_000913.3, NZ_CP009789.1, U00096, U04742, U04743, U04744, U04745, U04746, U04747, U04748, U04749, U04750, U04751, U04752, U04753, U04754, U04755, U04756, U04757, U04758, U04759, U04760, U04770, U18997, Y00129",
+    "NCBI fallback: resolved via NCBI gene summary",
+    "input treated as FASTA; header removed",
+    "fetched sequence from NCBI nuccore accession NC_000913.3",
+    "NCBI sequence source does not support Ensembl overlap lookup; skipped repeat/variant-based features"
+  ],
+  "feature_counts": {
+    "extreme_gc": 9,
+    "homopolymer": 132
+  },
+  "run_timestamp": "2026-02-16T15:03:11.917937Z"
+}
