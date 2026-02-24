@@ -74,37 +74,3 @@ git remote add origin <YOUR_GITHUB_REPO_URL>
 git branch -M main
 git push -u origin main
 ```
-
-## Release 패키지(Windows)
-
-### 1) 실행 파일 패키지 생성
-
-- `scripts\prepare_release_windows.bat` 실행
-- 결과: `release\pimer_maker_release\`
-  - `PrimerMaker.exe` : 더블클릭으로 실행되는 실행 파일
-  - `PrimerMaker.ico` : 실행 아이콘
-  - `source\` : 전체 소스 코드가 포함된 폴더
-  - `source\README.md` 와 `requirements.txt`, `src`, `scripts`, `tests`, `data` 포함
-- `release\pimer_maker_release.zip` 생성 (바로 배포용 아카이브)
-
-### 2) 아이콘 포함 바로가기 만들기
-
-- `scripts\package_release_shortcut.bat` 실행
-- 바탕화면에 `Primer Maker.lnk`가 생성되며, 실행 아이콘이 적용됩니다.
-
-### 3) 배포 권장 방식
-
-- 일반 사용자에게는 `release\pimer_maker_release\PrimerMaker.exe`만 배포/공유해도 되지만,
-  보관/검증이 필요하면 `release\pimer_maker_release\source` 폴더를 함께 전달하세요.
-
-### 4) GitHub Releases 자동 생성 (권장)
-
-태그를 push하면 Windows용 릴리즈가 자동으로 생성됩니다.
-
-1. 태그 생성/푸시
-   - `git tag v0.1.0`
-   - `git push origin v0.1.0`
-2. GitHub Actions가 `release_windows_exe.yml`을 실행해:
-   - `PrimerMaker.exe`
-   - `pimer_maker_release.zip`
-   을 자동 업로드합니다.
