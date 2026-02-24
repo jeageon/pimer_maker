@@ -25,6 +25,19 @@ uploaded_file = st.file_uploader("GenBank 파일", type=["gb", "gbk", "genbank"]
 previous_result = st.session_state.get("last_result")
 result = None
 
+
+def _normalize_primer_result(raw_result: object) -> dict[str, object] | None:
+    if not isinstance(raw_result, dict):
+        return None
+    metadata = raw_result.get("metadata")
+    if not isinstance(metadata, dict):
+        return None
+    required_keys = ("metadata", "sequence", "gb_text", "filename")
+    for key in required_keys:
+        if key not in raw_result:
+            return None
+    return raw_result
+
 with st.form("design_form"):
     st.subheader("설계 조건")
     c1, c2 = st.columns(2)
@@ -106,8 +119,9 @@ if run_btn:
             st.stop()
         st.session_state["last_result"] = result
 else:
-    if isinstance(previous_result, dict) and isinstance(previous_result.get("metadata"), dict):
-        result = previous_result
+    normalized = _normalize_primer_result(previous_result)
+    if normalized is not None:
+        result = normalized
     else:
         result = None
 if result is None:
@@ -115,6 +129,10 @@ if result is None:
     st.stop()
 
 st.success("설계 완료")
+result = _normalize_primer_result(result)
+if result is None:
+    st.error("저장된 결과 포맷이 손상되었습니다. 다시 설계를 실행해 주세요.")
+    st.stop()
 meta = result["metadata"]
 lcol, rcol = st.columns(2)
 with lcol:
@@ -141,8 +159,9 @@ st.download_button(
 )
 
 st.subheader("프라이머 후보 미리보기")
-if result["primer_candidates"]:
-    st.dataframe(result["primer_candidates"][:50], use_container_width=True, hide_index=True)
+primer_candidates = result.get("primer_candidates")
+if primer_candidates:
+    st.dataframe(primer_candidates[:50], use_container_width=True, hide_index=True)
 else:
     st.warning("조건을 만족하는 후보가 없습니다. 조건을 완화해 보세요.")
 
