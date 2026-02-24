@@ -22,6 +22,8 @@ st.caption("GenBank (.gb) 업로드 기반 프라이머 전체 후보 설계")
 
 
 uploaded_file = st.file_uploader("GenBank 파일", type=["gb", "gbk", "genbank"])
+previous_result = st.session_state.get("last_result")
+result = None
 
 with st.form("design_form"):
     st.subheader("설계 조건")
@@ -60,44 +62,50 @@ with st.form("design_form"):
     run_btn = st.form_submit_button("프라이머 설계 실행")
 
 
-if not run_btn:
+if not run_btn and previous_result is None:
     if not uploaded_file:
         st.info("GenBank 파일을 업로드하고 실행 버튼을 눌러 주세요.")
     st.stop()
 
-if not uploaded_file:
+if run_btn and not uploaded_file:
     st.error("GenBank 파일이 필요합니다.")
     st.stop()
 
-if gc_min > gc_max:
+if run_btn and gc_min > gc_max:
     st.error("GC min은 GC max보다 작아야 합니다.")
     st.stop()
-if len_min > len_max:
+if run_btn and len_min > len_max:
     st.error("최소 길이는 최대 길이보다 작아야 합니다.")
     st.stop()
 
-with st.spinner("간섭영역 분석 및 후보 생성 중..."):
-    try:
-        result = run_primer_pipeline(
-            uploaded_file.getvalue(),
-            source_filename=uploaded_file.name,
-            tm_target=float(tm_target),
-            tm_tolerance=float(tm_tolerance),
-            gc_min=float(gc_min),
-            gc_max=float(gc_max),
-            len_min=int(len_min),
-            len_max=int(len_max),
-            repeat_run_limit=int(repeat_run_limit),
-            gc_clamp_min=int(clamp_min),
-            gc_clamp_max=int(clamp_max),
-            include_input_features=bool(include_input_features),
-        )
-    except Exception as exc:
-        st.error(f"실행 실패: {exc}")
-        st.exception(exc)
+if run_btn:
+    if gc_min > gc_max or len_min > len_max:
         st.stop()
-
-st.session_state["last_result"] = result
+    with st.spinner("간섭영역 분석 및 후보 생성 중..."):
+        try:
+            result = run_primer_pipeline(
+                uploaded_file.getvalue(),
+                source_filename=uploaded_file.name,
+                tm_target=float(tm_target),
+                tm_tolerance=float(tm_tolerance),
+                gc_min=float(gc_min),
+                gc_max=float(gc_max),
+                len_min=int(len_min),
+                len_max=int(len_max),
+                repeat_run_limit=int(repeat_run_limit),
+                gc_clamp_min=int(clamp_min),
+                gc_clamp_max=int(clamp_max),
+                include_input_features=bool(include_input_features),
+            )
+        except Exception as exc:
+            st.error(f"실행 실패: {exc}")
+            st.exception(exc)
+            st.stop()
+        st.session_state["last_result"] = result
+else:
+    result = previous_result
+if result is None:
+    st.stop()
 
 st.success("설계 완료")
 meta = result["metadata"]
