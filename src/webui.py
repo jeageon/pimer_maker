@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from src.config import (
@@ -325,9 +326,38 @@ def _format_primer_notes(primer: dict[str, object]) -> str:
     return "; ".join(notes) if notes else "-"
 
 
+def _format_primer_list_name(
+    primer: dict[str, object],
+    plasmid_name: str,
+) -> str:
+    safe_plasmid = re.sub(r"[^A-Za-z0-9._-]", "_", str(plasmid_name or "plasmid"))
+    safe_plasmid = safe_plasmid.strip("._-") or "plasmid"
+
+    strand = primer.get("strand")
+    end_bp_1based = int(primer.get("end", 0) or 0)
+    if strand == -1:
+        start_val = int(primer.get("start", 0) or 0)
+        end_bp_1based = start_val + 1
+
+    tm = primer.get("tm")
+    if tm is None:
+        tm_str = "0"
+    else:
+        try:
+            tm_value = float(tm)
+            tm_str = f"{tm_value:.2f}".rstrip("0").rstrip(".")
+        except (TypeError, ValueError):
+            tm_str = str(tm)
+
+    direction = "F" if strand == 1 else "R"
+    ideal_mark = "*" if primer.get("is_ideal") else ""
+    return f"{safe_plasmid}_{end_bp_1based}_{tm_str}_{direction}{ideal_mark}"
+
+
 def _build_primer_list_text(
     primer_candidates: list[dict[str, object]],
     mode: str,
+    record_name: str,
 ) -> str:
     if not primer_candidates:
         return ""
@@ -336,7 +366,7 @@ def _build_primer_list_text(
         for item in primer_candidates:
             if not isinstance(item, dict):
                 continue
-            name = _safe_value(item.get("primer_id") or "primer")
+            name = _format_primer_list_name(item, record_name)
             seq = _safe_value(item.get("sequence"))
             if not seq:
                 continue
@@ -349,7 +379,7 @@ def _build_primer_list_text(
     for item in primer_candidates:
         if not isinstance(item, dict):
             continue
-        name = _safe_value(item.get("primer_id") or "primer")
+        name = _format_primer_list_name(item, record_name)
         seq = _safe_value(item.get("sequence"))
         if not seq:
             continue
@@ -526,7 +556,11 @@ if primer_candidates:
     elif list_mode.startswith("Multi-FASTA"):
         mode = "fasta"
 
-    list_text = _build_primer_list_text(primer_candidates, mode)
+    list_text = _build_primer_list_text(
+        primer_candidates,
+        mode,
+        str(result.get("record_name") or result.get("record_id") or "primer"),
+    )
     file_name, mime = _primer_list_filename(result, mode)
     st.download_button(
         label="프라이머 목록 파일 다운로드",
