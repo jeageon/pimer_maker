@@ -239,6 +239,11 @@ def run_primer_pipeline(
         "interference_count": len(interference),
         "interference_by_type": _count_by_feature_type(interference),
         "rejected_primer_feature_count": len(rejected_primer_features),
+        "palindrome_rejected_primer_feature_count": sum(
+            1
+            for feature in rejected_primer_features
+            if feature.reason in {"hairpin", "self_dimer"}
+        ),
         "self_dimer_exclude_identical_window": self_dimer_exclude_identical_window,
         "primer_candidate_count": len(primer_candidates),
         "primer_ideal_count": sum(1 for item in primer_candidates if item.is_ideal),
@@ -1073,7 +1078,10 @@ def build_annotated_record(
             )
         )
 
-    for feature in sorted(rejected_primer_features, key=lambda item: (item.start, item.end)):
+    palindrome_rejected = [
+        item for item in rejected_primer_features if item.reason in {"hairpin", "self_dimer"}
+    ]
+    for feature in sorted(palindrome_rejected, key=lambda item: (item.start, item.end)):
         output.features.append(
             SeqFeature(
                 FeatureLocation(max(0, feature.start), min(len(record.seq), feature.end)),
