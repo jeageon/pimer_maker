@@ -387,6 +387,8 @@ def find_candidates(
     ideal_repeat_unit_limit: int,
     repeat_run_limit: int,
     max_candidates: Optional[int],
+    self_dimer_min_overlap: int = DEFAULT_MANUAL_SELF_DIMER_MIN_OVERLAP,
+    self_dimer_max_overlap: int = DEFAULT_MANUAL_SELF_DIMER_MAX_OVERLAP,
 ) -> list[PrimerCandidate]:
     if len_min < 12:
         len_min = 12
@@ -414,6 +416,13 @@ def find_candidates(
             if not _gc_clamp_ok(template_window, gc_clamp_min, gc_clamp_max):
                 continue
             if _has_hairpin_like(template_window):
+                continue
+            if _pair_dimer_overlap_info(
+                template_window,
+                template_window,
+                min_overlap=self_dimer_min_overlap,
+                max_overlap=self_dimer_max_overlap,
+            ):
                 continue
 
             tm = _calc_tm(template_window)
@@ -554,6 +563,7 @@ def validate_primer_pair(
     sequence = sequence.upper()
     forward = _normalize_primer(forward_seq)
     reverse = _normalize_primer(reverse_seq)
+    interference_details: list[dict[str, Any]] = []
 
     if not forward or not reverse:
         return {
@@ -586,22 +596,78 @@ def validate_primer_pair(
         }
 
     interference_errors: list[str] = []
-    if _has_hairpin_like(forward, min_k=hairpin_min_k, max_k=hairpin_max_k):
+    forward_hairpin = _hairpin_overlap_info(forward, min_k=hairpin_min_k, max_k=hairpin_max_k)
+    if forward_hairpin:
         interference_errors.append("forward primer is likely to form hairpin")
-    if _has_hairpin_like(reverse, min_k=hairpin_min_k, max_k=hairpin_max_k):
+        interference_details.append(
+            {
+                "scope": "single_primer",
+                "primer": "forward",
+                "type": "hairpin",
+                "overlap_len": forward_hairpin["overlap_len"],
+                "primer_tail": forward_hairpin["tail"],
+                "internal_match": forward_hairpin["match_seq"],
+                "match_index": forward_hairpin["match_start"],
+            }
+        )
+
+    reverse_hairpin = _hairpin_overlap_info(reverse, min_k=hairpin_min_k, max_k=hairpin_max_k)
+    if reverse_hairpin:
         interference_errors.append("reverse primer is likely to form hairpin")
-    if _self_dimer_risk(
+        interference_details.append(
+            {
+                "scope": "single_primer",
+                "primer": "reverse",
+                "type": "hairpin",
+                "overlap_len": reverse_hairpin["overlap_len"],
+                "primer_tail": reverse_hairpin["tail"],
+                "internal_match": reverse_hairpin["match_seq"],
+                "match_index": reverse_hairpin["match_start"],
+            }
+        )
+
+    forward_self_dimer = _pair_dimer_overlap_info(
+        forward,
         forward,
         min_overlap=self_dimer_min_overlap,
         max_overlap=self_dimer_max_overlap,
-    ):
+    )
+    if forward_self_dimer:
         interference_errors.append("forward primer is likely to form self-dimer")
-    if _self_dimer_risk(
+        interference_details.append(
+            {
+                "scope": "single_primer",
+                "primer": "forward",
+                "type": "self_dimer",
+                "overlap_len": forward_self_dimer["overlap_len"],
+                "primer_tail": forward_self_dimer["a_tail"],
+                "complement_match": forward_self_dimer["match_seq"],
+                "paired_index": forward_self_dimer["matched_index_in_b"],
+                "pairing": forward_self_dimer["pairing"],
+            }
+        )
+
+    reverse_self_dimer = _pair_dimer_overlap_info(
+        reverse,
         reverse,
         min_overlap=self_dimer_min_overlap,
         max_overlap=self_dimer_max_overlap,
-    ):
+    )
+    if reverse_self_dimer:
         interference_errors.append("reverse primer is likely to form self-dimer")
+        interference_details.append(
+            {
+                "scope": "single_primer",
+                "primer": "reverse",
+                "type": "self_dimer",
+                "overlap_len": reverse_self_dimer["overlap_len"],
+                "primer_tail": reverse_self_dimer["a_tail"],
+                "complement_match": reverse_self_dimer["match_seq"],
+                "paired_index": reverse_self_dimer["matched_index_in_b"],
+                "pairing": reverse_self_dimer["pairing"],
+            }
+        )
+
     if interference_errors:
         return {
             "valid": False,
@@ -627,7 +693,8 @@ def validate_primer_pair(
     seed_len = max(1, int(offtarget_seed_len))
     warning_limit = int(offtarget_seed_warning_limit)
     product_size_samples: list[int] = []
-    off_target_samples: list[tuple[str, str]] = []
+    off_target_samples: list[dict[str, Any]] = []
+    pair_dimer_samples: list[dict[str, Any]] = []
 
     pairs: list[PrimerPairBinding] = []
     off_target_pairs = 0
@@ -658,6 +725,29 @@ def validate_primer_pair(
             )
             if dimer_risk:
                 skipped_dimer += 1
+                dimer_match = _pair_dimer_overlap_info(
+                    forward,
+                    reverse,
+                    min_overlap=pair_dimer_min_overlap,
+                    max_overlap=pair_dimer_max_overlap,
+                    require_3p=pair_dimer_require_3p,
+                )
+                if dimer_match and len(pair_dimer_samples) < 10:
+                    pair_dimer_samples.append(
+                        {
+                            "scope": "pair",
+                            "type": "cross_dimer",
+                            "forward_pos": f[0],
+                            "reverse_pos": r[0],
+                            "forward_strand": f[2],
+                            "reverse_strand": r[2],
+                            "overlap_len": dimer_match["overlap_len"],
+                            "a_tail": dimer_match["a_tail"],
+                            "b_tail": dimer_match["b_tail"],
+                            "match_seq": dimer_match["match_seq"],
+                            "pairing": dimer_match["pairing"],
+                        }
+                    )
                 continue
 
             seed_warnings = max(_seed_offtarget_count(sequence, forward[-seed_len:]) - 1, 0) + max(
@@ -667,7 +757,15 @@ def validate_primer_pair(
             if warning_limit > 0 and seed_warnings >= warning_limit:
                 off_target_pairs += 1
                 if len(off_target_samples) < 10:
-                    off_target_samples.append((forward[-seed_len:], reverse[-seed_len:]))
+                    off_target_samples.append(
+                        {
+                            "seed_len": seed_len,
+                            "forward_seed": forward[-seed_len:],
+                            "reverse_seed": reverse[-seed_len:],
+                            "forward_seed_hits": _seed_offtarget_count(sequence, forward[-seed_len:]),
+                            "reverse_seed_hits": _seed_offtarget_count(sequence, reverse[-seed_len:]),
+                        }
+                    )
             pairs.append(
                 PrimerPairBinding(
                     forward_start=f[0],
@@ -704,6 +802,9 @@ def validate_primer_pair(
         summary_messages.append(f"예시(오프타겟 시드): {off_target_samples[:10]}")
 
     if not pairs:
+        interference_summary = list(interference_details)
+        interference_summary.extend(pair_dimer_samples)
+        interference_summary.extend(off_target_samples)
         failure_reasons: list[str] = []
         if opposite_pairs_total <= 0:
             failure_reasons.append("forward/reverse binding sites are on the same strand; reverse primer may need reverse-complement input")
@@ -737,6 +838,7 @@ def validate_primer_pair(
                 "product_size_samples": product_size_samples,
                 "off_target_samples": off_target_samples,
             },
+            "interference_details": interference_summary,
             "errors": ["no valid product found under configured range", *failure_reasons],
             "pairs": [],
         }
@@ -751,6 +853,7 @@ def validate_primer_pair(
 
     return {
         "valid": True,
+        "interference_details": list(interference_details) + list(off_target_samples),
         "summary_messages": summary_messages,
         "filter_summary": {
             "total_combinations": total_combinations,
@@ -1173,6 +1276,15 @@ def _gc_clamp_ok(sequence: str, min_count: int, max_count: int) -> bool:
 
 
 def _has_hairpin_like(sequence: str, *, min_k: int = 4, max_k: int = 7) -> bool:
+    return _hairpin_overlap_info(sequence, min_k=min_k, max_k=max_k) is not None
+
+
+def _hairpin_overlap_info(
+    sequence: str,
+    *,
+    min_k: int = 4,
+    max_k: int = 7,
+) -> Optional[dict[str, Any]]:
     seq = sequence.upper()
     if min_k < 1:
         min_k = 1
@@ -1181,9 +1293,16 @@ def _has_hairpin_like(sequence: str, *, min_k: int = 4, max_k: int = 7) -> bool:
     for k in range(min_k, min(len(seq), max_k) + 1):
         tail = seq[-k:]
         rc = str(Seq(tail).reverse_complement())
-        if rc in seq[:-1]:
-            return True
-    return False
+        match_pos = seq[:-1].find(rc)
+        if match_pos >= 0:
+            return {
+                "overlap_len": k,
+                "tail": tail,
+                "match_seq": rc,
+                "match_start": match_pos,
+                "match_end": match_pos + k,
+            }
+    return None
 
 
 def _calc_tm(sequence: str) -> Optional[float]:
@@ -1250,7 +1369,12 @@ def _seed_offtarget_count(sequence: str, seed: str) -> int:
 
 
 def _self_dimer_risk(sequence: str, *, min_overlap: int = 4, max_overlap: int = 7) -> bool:
-    return _pair_dimer_risk(sequence, sequence, min_overlap=min_overlap, max_overlap=max_overlap)
+    return _pair_dimer_overlap_info(
+        sequence,
+        sequence,
+        min_overlap=min_overlap,
+        max_overlap=max_overlap,
+    ) is not None
 
 
 def _pair_dimer_risk(
@@ -1261,23 +1385,67 @@ def _pair_dimer_risk(
     max_overlap: int = 7,
     require_3p: bool = False,
 ) -> bool:
+    return _pair_dimer_overlap_info(
+        seq_a,
+        seq_b,
+        min_overlap=min_overlap,
+        max_overlap=max_overlap,
+        require_3p=require_3p,
+    ) is not None
+
+
+def _pair_dimer_overlap_info(
+    seq_a: str,
+    seq_b: str,
+    *,
+    min_overlap: int = 4,
+    max_overlap: int = 7,
+    require_3p: bool = False,
+) -> Optional[dict[str, Any]]:
     a = seq_a.upper()
     b = seq_b.upper()
     min_overlap = max(1, min_overlap)
     if max_overlap < min_overlap:
         max_overlap = min_overlap
     max_len = min(max_overlap, len(a), len(b))
-    check_a = b if not require_3p else b[max(0, len(b) - 2 * max_len) :]
-    check_b = a if not require_3p else a[max(0, len(a) - 2 * max_len) :]
+    if max_len <= 0:
+        return None
+
+    check_a_start = 0
+    check_b_start = 0
+    if require_3p:
+        check_a_start = max(0, len(b) - 2 * max_len)
+        check_b_start = max(0, len(a) - 2 * max_len)
     for k in range(min_overlap, max_len + 1):
         a_tail = a[-k:]
         b_tail = b[-k:]
-        if str(Seq(a_tail).reverse_complement()) in b:
-            return True
-        if str(Seq(b_tail).reverse_complement()) in a:
-            return True
-        if require_3p and str(Seq(a_tail).reverse_complement()) in check_a:
-            return True
-        if require_3p and str(Seq(b_tail).reverse_complement()) in check_b:
-            return True
-    return False
+        a_tail_rc = str(Seq(a_tail).reverse_complement())
+        pos_in_b = b.find(a_tail_rc)
+        if pos_in_b >= 0:
+            if not require_3p or pos_in_b >= check_a_start:
+                return {
+                    "overlap_len": k,
+                    "a_tail": a_tail,
+                    "b_tail": b_tail,
+                    "match_seq": a_tail_rc,
+                    "paired_index_in_a": len(a) - k,
+                    "paired_index_in_b": pos_in_b,
+                    "match_in": "b",
+                    "pairing": "a_tail_to_b",
+                }
+
+        b_tail_rc = str(Seq(b_tail).reverse_complement())
+        pos_in_a = a.find(b_tail_rc)
+        if pos_in_a >= 0:
+            if not require_3p or pos_in_a >= check_b_start:
+                return {
+                    "overlap_len": k,
+                    "a_tail": a_tail,
+                    "b_tail": b_tail,
+                    "match_seq": b_tail_rc,
+                    "paired_index_in_a": pos_in_a,
+                    "paired_index_in_b": len(b) - k,
+                    "match_in": "a",
+                    "pairing": "b_tail_to_a",
+                }
+    return None

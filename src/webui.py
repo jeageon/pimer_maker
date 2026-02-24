@@ -125,6 +125,22 @@ def _render_filter_status(filter_summary: dict[str, object]) -> None:
     if total > 0 and opposite <= 0 and skipped_size == 0 and skipped_dimer == 0:
         st.warning("same-strand 결합만 존재해 유효한 증폭 쌍을 만들지 못했습니다.")
 
+
+def _render_interference_details(interference_details: object) -> None:
+    if not isinstance(interference_details, list) or not interference_details:
+        return
+
+    rows = []
+    for item in interference_details:
+        if isinstance(item, dict):
+            rows.append(item)
+
+    if not rows:
+        return
+
+    st.subheader("간섭 시퀀스 상세")
+    st.dataframe(rows[:20], use_container_width=True, hide_index=True)
+
 with st.form("design_form"):
     st.subheader("설계 조건")
     c1, c2 = st.columns(2)
@@ -383,6 +399,7 @@ if st.button("쌍 검증"):
     )
     if not check["valid"]:
         st.error("검증 실패")
+        _render_interference_details(check.get("interference_details"))
         with st.expander("검증 결과 상세", expanded=True):
             for msg in check.get("summary_messages", []):
                 translated = _dual_lang_text(str(msg))
@@ -410,6 +427,7 @@ if st.button("쌍 검증"):
             st.error(_dual_lang_text(str(msg)))
     else:
         st.success("조건 통과")
+        _render_interference_details(check.get("interference_details"))
         with st.expander("검증 결과 상세", expanded=False):
             for msg in check.get("summary_messages", []):
                 translated = _dual_lang_text(str(msg))
@@ -432,7 +450,7 @@ if st.button("쌍 검증"):
                     st.caption(f"오프타겟 시드 예시(앞->뒤): {off_target_examples[:10]}")
                 st.json(filter_summary)
         if check.get("warnings"):
-            for msg in check["warnings"]:
+            for msg in check.get("warnings"):
                 translated = _dual_lang_text(str(msg))
                 if "Tm" in str(msg):
                     st.warning(translated)
