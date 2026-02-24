@@ -6,7 +6,7 @@ GenBank(`.gb`) 파일을 입력받아
 결과를 주석(Feature) 포함 `GenBank`로 내려주는 도구입니다.
 
 ## 실행 방법
-
+release의 zip파일을 C:\Program Files\에 압축풀기
 
 ### Windows
 C:\Program Files\pimer_maker-v0.1.8 폴더에서
