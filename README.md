@@ -1,6 +1,6 @@
 # Primer Maker
 
-`pimer_maker`는 기존 `DH5a-UTG` 기반 코드 구조를 활용해
+`pimer_maker`는 기존 도구의 핵심 로직을 재활용해
 GenBank(`.gb`) 파일을 입력받아
 `프라이머 간섭 구간`과 `프라이머 후보`를 계산하고
 결과를 주석(Feature) 포함 `GenBank`로 내려주는 도구입니다.

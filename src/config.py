@@ -18,10 +18,10 @@ DEFAULT_FLANK = 10_000
 
 NCBI_EFETCH = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 
-# DH5a reference genome (Escherichia coli DH5alpha)
-DH5A_ACCESSION = "CP076470"
-DH5A_TAXID = 511145
-DH5A_NAME = "Escherichia coli DH5alpha"
+# Reference genome used only by optional legacy CLI resolver
+REFERENCE_ACCESSION = "CP076470"
+REFERENCE_TAXID = 511145
+REFERENCE_NAME = "Escherichia coli reference"
 
 ENSEMBL_SEQUENCE_REGION = "https://rest.ensembl.org/sequence/region/{species}/{region}"
 ENSEMBL_SEQUENCE_ID = "https://rest.ensembl.org/sequence/id/{ensembl_id}"
@@ -34,7 +34,7 @@ CACHE_DIR = Path("data/cache")
 ENSEMBL_SEQUENCE_MAX_BP = 10_000_000
 ENSEMBL_SEQUENCE_SAFETY_BP = 9_500_000
 
-USER_AGENT = "UTG/1.0.0 (+https://github.com/)"
+USER_AGENT = "PrimerMaker/1.0.0 (+https://github.com/)"
 
 
 # Primer maker defaults

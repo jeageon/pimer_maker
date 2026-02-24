@@ -7,7 +7,12 @@ from typing import Any, Optional
 
 from Bio import SeqIO
 
-from ..config import DH5A_ACCESSION, DH5A_NAME, DH5A_TAXID, NCBI_EFETCH
+from ..config import (
+    REFERENCE_ACCESSION,
+    REFERENCE_NAME,
+    REFERENCE_TAXID,
+    NCBI_EFETCH,
+)
 from ..models.data_schemas import GenomicCoordinates
 from ..utils.coord_utils import apply_flank
 from ..utils.exceptions import NoMappingError, ToolError
@@ -102,7 +107,7 @@ class CoordinateResolver:
         candidates = self._find_gene_candidates(record, query)
         if not candidates:
             suggestions = ", ".join(sorted(set(self._collect_common_gene_names(record)))[:20])
-            warn = "No direct match found in CP076470"
+            warn = f"No direct match found in {REFERENCE_ACCESSION}"
             if suggestions:
                 warn = f"{warn}. 가까운 후보: {suggestions}"
             raise NoMappingError(warn)
@@ -119,7 +124,9 @@ class CoordinateResolver:
         gene_start = _to_int(best.location.start) + 1
         gene_end = _to_int(best.location.end)
         if gene_start is None or gene_end is None:
-            raise NoMappingError(f"Invalid coordinate span for matched feature in CP076470: {match_name}")
+            raise NoMappingError(
+                f"Invalid coordinate span for matched feature in {REFERENCE_ACCESSION}: {match_name}"
+            )
         if gene_start > gene_end:
             gene_start, gene_end = gene_end, gene_start
 
@@ -148,15 +155,15 @@ class CoordinateResolver:
                 coordinate_source="ncbi",
                 query_gene=query,
                 query_type="gene_name",
-                ncbi_accession=DH5A_ACCESSION,
-                species=DH5A_NAME,
-                assembly_name=DH5A_NAME,
-                seq_region_name=DH5A_ACCESSION,
+                ncbi_accession=REFERENCE_ACCESSION,
+                species=REFERENCE_NAME,
+                assembly_name=REFERENCE_NAME,
+                seq_region_name=REFERENCE_ACCESSION,
                 gene_start_1based=gene_start,
                 gene_end_1based=gene_end,
                 strand=strand,
                 display_name=display_name,
-                taxid=DH5A_TAXID,
+                taxid=REFERENCE_TAXID,
                 ncbi_genome_length=genome_len,
                 ncbi_annotations=annotations,
                 ext_start_1based=ext_start,
@@ -174,18 +181,18 @@ class CoordinateResolver:
             headers={"Accept": "text/plain"},
             params={
                 "db": "nuccore",
-                "id": DH5A_ACCESSION,
+                "id": REFERENCE_ACCESSION,
                 "rettype": "gb",
                 "retmode": "text",
             },
         )
         if not response.text:
-            raise ToolError(f"No sequence returned for reference accession {DH5A_ACCESSION}")
+            raise ToolError(f"No sequence returned for reference accession {REFERENCE_ACCESSION}")
 
         try:
             record = SeqIO.read(StringIO(response.text), "genbank")
         except Exception as exc:
-            raise ToolError(f"Failed to parse GenBank record for {DH5A_ACCESSION}: {exc}")
+            raise ToolError(f"Failed to parse GenBank record for {REFERENCE_ACCESSION}: {exc}")
 
         self._record = record
         return record
@@ -331,4 +338,3 @@ class CoordinateResolver:
                     if item:
                         names.append(item.strip())
         return names
-

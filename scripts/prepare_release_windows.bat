@@ -78,7 +78,6 @@ xcopy /E /I /Y "%PROJECT_DIR%\scripts" "%RELEASE_DIR%\source\scripts" >nul
 xcopy /E /I /Y "%PROJECT_DIR%\tests" "%RELEASE_DIR%\source\tests" >nul
 copy /Y "%PROJECT_DIR%\requirements.txt" "%RELEASE_DIR%\source\requirements.txt" >nul
 copy /Y "%PROJECT_DIR%\README.md" "%RELEASE_DIR%\source\README.md" >nul
-if exist "%PROJECT_DIR%\utg.py" copy /Y "%PROJECT_DIR%\utg.py" "%RELEASE_DIR%\source\utg.py" >nul
 if exist "%PROJECT_DIR%\data" xcopy /E /I /Y "%PROJECT_DIR%\data" "%RELEASE_DIR%\source\data" >nul
 
 copy /Y "%PROJECT_DIR%\dist\%APP_NAME%.exe" "%RELEASE_DIR%\%APP_NAME%.exe" >nul

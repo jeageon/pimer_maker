@@ -53,7 +53,6 @@ jobs:
           Copy-Item -Path README.md -Destination release\\pimer_maker_release\\source -Force
           Copy-Item -Path requirements.txt -Destination release\\pimer_maker_release\\source -Force
           Copy-Item -Recurse -Path src,scripts,tests,data -Destination release\\pimer_maker_release\\source -Force
-          if (Test-Path utg.py) { Copy-Item -Path utg.py -Destination release\\pimer_maker_release\\source\\utg.py -Force }
           Compress-Archive -Path release\\pimer_maker_release\\* -DestinationPath release\\pimer_maker_release.zip -Force
 
       - name: Publish GitHub release
