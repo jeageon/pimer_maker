@@ -50,6 +50,7 @@ jobs:
 
           Copy-Item -Path dist\\PrimerMaker.exe -Destination release\\pimer_maker_release\\PrimerMaker.exe -Force
           Copy-Item -Path resources\\primer_maker.ico -Destination release\\pimer_maker_release\\PrimerMaker.ico -Force
+          Copy-Item -Path scripts\\install_primer_maker.bat -Destination release\\pimer_maker_release\\install_primer_maker.bat -Force
           Copy-Item -Path README.md -Destination release\\pimer_maker_release\\source -Force
           Copy-Item -Path requirements.txt -Destination release\\pimer_maker_release\\source -Force
           Copy-Item -Recurse -Path src,scripts,tests,data -Destination release\\pimer_maker_release\\source -Force
@@ -61,4 +62,5 @@ jobs:
           files: |
             release/pimer_maker_release/PrimerMaker.exe
             release/pimer_maker_release.zip
+            release/pimer_maker_release/install_primer_maker.bat
           generate_release_notes: true
