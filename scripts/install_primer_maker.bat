@@ -24,14 +24,7 @@ if "%1"=="--help" (
 )
 
 if "%~1"=="" (
-    set "PROGRAM_DIR="
-    if defined ProgramFiles set "PROGRAM_DIR=%ProgramFiles%"
-    if not defined PROGRAM_DIR if defined ProgramFiles(x86) set "PROGRAM_DIR=%ProgramFiles(x86)%"
-    if not defined PROGRAM_DIR if defined ProgramW6432 set "PROGRAM_DIR=%ProgramW6432%"
-    if not defined PROGRAM_DIR if defined SystemDrive set "PROGRAM_DIR=%SystemDrive%\Program Files"
-    if not defined PROGRAM_DIR set "PROGRAM_DIR=%USERPROFILE%\Program Files"
-
-    set "INSTALL_DIR=%PROGRAM_DIR%\%APP_NAME%"
+    set "INSTALL_DIR=%ProgramFiles%\%APP_NAME%"
     echo.
     echo Press Enter to use default path, or type install directory directly:
     echo [%INSTALL_DIR%]
@@ -46,17 +39,9 @@ if "%~1"=="" (
 set "INSTALL_ROOT=%INSTALL_DIR%"
 call :ensure_dir "%INSTALL_DIR%"
 if errorlevel 1 (
-    set "LOCALAPP_DIR="
-    if defined LOCALAPPDATA set "LOCALAPP_DIR=%LOCALAPPDATA%"
-    if not defined LOCALAPP_DIR if defined LocalAppData set "LOCALAPP_DIR=%LocalAppData%"
-    if not defined LOCALAPP_DIR if defined USERPROFILE set "LOCALAPP_DIR=%USERPROFILE%\\AppData\\Local"
-    if not defined LOCALAPP_DIR if defined APPDATA set "LOCALAPP_DIR=%APPDATA%\\..\\Local"
-    if not defined LOCALAPP_DIR if defined SystemDrive set "LOCALAPP_DIR=%SystemDrive%\\Users\\%USERNAME%\\AppData\\Local"
-    if not defined LOCALAPP_DIR set "LOCALAPP_DIR=%USERPROFILE%\\AppData\\Local"
-    if not defined LOCALAPP_DIR set "LOCALAPP_DIR=%CD%"
-
+    if not defined LOCALAPPDATA set "LOCALAPPDATA=%USERPROFILE%\\AppData\\Local"
     echo [WARN] cannot create default path: %INSTALL_DIR%
-    set "INSTALL_DIR=%LOCALAPP_DIR%\\Programs\\%APP_NAME%"
+    set "INSTALL_DIR=%LOCALAPPDATA%\\Programs\\%APP_NAME%"
     echo [INFO] fallback install path: %INSTALL_DIR%
     call :ensure_dir "%INSTALL_DIR%"
     if errorlevel 1 (
