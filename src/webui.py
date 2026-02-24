@@ -456,6 +456,48 @@ def _build_interference_gff3(
     return "\n".join(lines)
 
 
+def _build_palindrome_features_for_gff3(
+    rejected_primer_features: object,
+) -> list[dict[str, object]]:
+    if not isinstance(rejected_primer_features, list):
+        return []
+    results: list[dict[str, object]] = []
+    for item in rejected_primer_features:
+        if not isinstance(item, dict):
+            continue
+        reason = _safe_value(item.get("reason"))
+        if reason not in {"hairpin", "self_dimer"}:
+            continue
+
+        start = item.get("start")
+        end = item.get("end")
+        length = item.get("length", "")
+        details = item.get("details")
+        attrs: dict[str, object] = {
+            "reason": reason,
+            "primer_seq": item.get("sequence"),
+            "primer_length": length,
+            "primer_start": start,
+            "primer_end": end,
+        }
+        if isinstance(details, dict):
+            for key, value in details.items():
+                attrs[f"detail_{_safe_value(key)}"] = _safe_value(value)
+
+        results.append(
+            {
+                "feature_type": f"palindrome_{reason}",
+                "start": start,
+                "end": end,
+                "source": "primer_pipeline",
+                "strand": 1,
+                "description": f"excluded primer due to {reason}",
+                "attributes": attrs,
+            }
+        )
+    return results
+
+
 def _build_primer_list_text(
     primer_candidates: list[dict[str, object]],
     mode: str,
@@ -638,9 +680,14 @@ st.subheader("추가 feature GFF3 다운로드 (프라이머 제외)")
 interference_regions = result.get("interference_regions") or []
 if not isinstance(interference_regions, list):
     interference_regions = []
-if interference_regions:
+rejected_primer_features = result.get("rejected_primer_features") or []
+palindrome_features = _build_palindrome_features_for_gff3(rejected_primer_features)
+if interference_regions or palindrome_features:
+    combined_interference_features = [
+        item for item in interference_regions if isinstance(item, dict)
+    ] + palindrome_features
     interference_gff3 = _build_interference_gff3(
-        [item for item in interference_regions if isinstance(item, dict)],
+        combined_interference_features,
         str(result.get("record_name") or result.get("record_id") or "primer"),
         int(meta.get("sequence_length", 0)),
     )
