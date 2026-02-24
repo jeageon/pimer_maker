@@ -72,6 +72,16 @@ class PrimerCandidate:
 
 
 @dataclass(frozen=True)
+class RejectedPrimerFeature:
+    reason: str
+    sequence: str
+    start: int
+    end: int
+    length: int
+    details: dict[str, Any]
+
+
+@dataclass(frozen=True)
 class PrimerPairBinding:
     forward_start: int
     forward_end: int
@@ -179,7 +189,7 @@ def run_primer_pipeline(
         include_input_features=include_input_features,
     )
 
-    primer_candidates = find_candidates(
+    primer_candidates, rejected_primer_features = find_candidates(
         sequence=sequence,
         interference_regions=interference,
         tm_target=tm_target,
@@ -204,6 +214,7 @@ def run_primer_pipeline(
         record=record,
         interference_regions=interference,
         primer_candidates=primer_candidates,
+        rejected_primer_features=rejected_primer_features,
         plasmid_name=plasmid_name,
     )
     gb_text = _to_genbank_text(annotated_record)
@@ -227,6 +238,7 @@ def run_primer_pipeline(
         "product_size_range": [product_min, product_max],
         "interference_count": len(interference),
         "interference_by_type": _count_by_feature_type(interference),
+        "rejected_primer_feature_count": len(rejected_primer_features),
         "self_dimer_exclude_identical_window": self_dimer_exclude_identical_window,
         "primer_candidate_count": len(primer_candidates),
         "primer_ideal_count": sum(1 for item in primer_candidates if item.is_ideal),
@@ -243,6 +255,7 @@ def run_primer_pipeline(
         "metadata": metadata,
         "interference_regions": [item.model_dump() for item in interference],
         "primer_candidates": [asdict(item) for item in primer_candidates],
+        "rejected_primer_features": [asdict(item) for item in rejected_primer_features],
     }
 
 
@@ -394,7 +407,7 @@ def find_candidates(
     self_dimer_min_overlap: int = DEFAULT_MANUAL_SELF_DIMER_MIN_OVERLAP,
     self_dimer_max_overlap: int = DEFAULT_MANUAL_SELF_DIMER_MAX_OVERLAP,
     self_dimer_exclude_identical_window: bool = DEFAULT_MANUAL_SELF_DIMER_EXCLUDE_IDENTICAL_WINDOW,
-) -> list[PrimerCandidate]:
+) -> tuple[list[PrimerCandidate], list[RejectedPrimerFeature]]:
     if len_min < 12:
         len_min = 12
     if len_max < len_min:
@@ -403,6 +416,7 @@ def find_candidates(
     seq_len = len(sequence)
     forbidden = _intervals_from_features(interference_regions)
     forward_candidates: list[PrimerCandidate] = []
+    rejected_features: list[RejectedPrimerFeature] = []
     seq = sequence.upper()
 
     if ideal_tm_min > ideal_tm_max:
@@ -413,33 +427,128 @@ def find_candidates(
             end = start + primer_len
             template_window = seq[start:end]
             if "N" in template_window:
+                rejected_features.append(
+                    RejectedPrimerFeature(
+                        reason="contains_N",
+                        sequence=template_window,
+                        start=start,
+                        end=end,
+                        length=primer_len,
+                        details={},
+                    )
+                )
                 continue
             if _overlaps_any(start, end, forbidden):
+                rejected_features.append(
+                    RejectedPrimerFeature(
+                        reason="overlaps_interference",
+                        sequence=template_window,
+                        start=start,
+                        end=end,
+                        length=primer_len,
+                        details={},
+                    )
+                )
                 continue
             if len(template_window) != primer_len or _has_repeat_run(template_window, repeat_run_limit):
+                rejected_features.append(
+                    RejectedPrimerFeature(
+                        reason="repeat_run",
+                        sequence=template_window,
+                        start=start,
+                        end=end,
+                        length=primer_len,
+                        details={},
+                    )
+                )
                 continue
             if not _gc_clamp_ok(template_window, gc_clamp_min, gc_clamp_max):
+                rejected_features.append(
+                    RejectedPrimerFeature(
+                        reason="gc_clamp",
+                        sequence=template_window,
+                        start=start,
+                        end=end,
+                        length=primer_len,
+                        details={"gc_clamp": _gc_clamp_count(template_window)},
+                    )
+                )
                 continue
             if _has_hairpin_like(template_window):
+                rejected_features.append(
+                    RejectedPrimerFeature(
+                        reason="hairpin",
+                        sequence=template_window,
+                        start=start,
+                        end=end,
+                        length=primer_len,
+                        details=_hairpin_overlap_info(template_window) or {},
+                    )
+                )
                 continue
-            if _pair_dimer_overlap_info(
+            self_dimer_info = _pair_dimer_overlap_info(
                 template_window,
                 template_window,
                 min_overlap=self_dimer_min_overlap,
                 max_overlap=self_dimer_max_overlap,
                 full_sequence_scan=True,
                 allow_identical_window_match=not self_dimer_exclude_identical_window,
-            ):
+            )
+            if self_dimer_info:
+                rejected_features.append(
+                    RejectedPrimerFeature(
+                        reason="self_dimer",
+                        sequence=template_window,
+                        start=start,
+                        end=end,
+                        length=primer_len,
+                        details=self_dimer_info,
+                    )
+                )
                 continue
 
             tm = _calc_tm(template_window)
             if tm is None:
+                rejected_features.append(
+                    RejectedPrimerFeature(
+                        reason="tm_calc_failed",
+                        sequence=template_window,
+                        start=start,
+                        end=end,
+                        length=primer_len,
+                        details={},
+                    )
+                )
                 continue
             if not (tm_target - tm_tolerance <= tm <= tm_target + tm_tolerance):
+                rejected_features.append(
+                    RejectedPrimerFeature(
+                        reason="tm_out_of_range",
+                        sequence=template_window,
+                        start=start,
+                        end=end,
+                        length=primer_len,
+                        details={
+                            "tm": tm,
+                            "tm_target": tm_target,
+                            "tm_tolerance": tm_tolerance,
+                        },
+                    )
+                )
                 continue
 
             gc = gc_percent(template_window)
             if not (gc_min <= gc <= gc_max):
+                rejected_features.append(
+                    RejectedPrimerFeature(
+                        reason="gc_out_of_range",
+                        sequence=template_window,
+                        start=start,
+                        end=end,
+                        length=primer_len,
+                        details={"gc": gc, "gc_min": gc_min, "gc_max": gc_max},
+                    )
+                )
                 continue
 
             score = _score_candidate(
@@ -542,9 +651,9 @@ def find_candidates(
                 score=cand.score,
                 is_ideal=reverse_is_ideal,
             )
-        )
+    )
 
-    return result
+    return result, rejected_features
 
 
 def validate_primer_pair(
@@ -935,6 +1044,7 @@ def build_annotated_record(
     record: SeqRecord,
     interference_regions: list[NegativeFeature],
     primer_candidates: list[PrimerCandidate],
+    rejected_primer_features: list[RejectedPrimerFeature],
     *,
     plasmid_name: str,
 ) -> SeqRecord:
@@ -959,6 +1069,24 @@ def build_annotated_record(
                     "reason": [feature.feature_type],
                     "ApEinfo_fwdcolor": ["#ff9999"],
                     "ApEinfo_revcolor": ["#ff6666"],
+                },
+            )
+        )
+
+    for feature in sorted(rejected_primer_features, key=lambda item: (item.start, item.end)):
+        output.features.append(
+            SeqFeature(
+                FeatureLocation(max(0, feature.start), min(len(record.seq), feature.end)),
+                type="misc_feature",
+                qualifiers={
+                    "label": [f"excluded_{feature.reason}"],
+                    "note": [f"excluded: {feature.reason}"],
+                    "sequence": [feature.sequence],
+                    "reason": [feature.reason],
+                    "details": [str(feature.details)],
+                    "length": [str(feature.length)],
+                    "ApEinfo_fwdcolor": ["#ffb347"],
+                    "ApEinfo_revcolor": ["#ffb347"],
                 },
             )
         )
