@@ -287,6 +287,95 @@ def json_like(value: Any) -> str:
         return ", ".join(f"{k}={v}" for k, v in value.items())
     return str(value)
 
+
+def _safe_value(value: object) -> str:
+    if value is None:
+        return ""
+    return str(value).replace("\n", " ").replace("\r", " ").strip()
+
+
+def _format_primer_notes(primer: dict[str, object]) -> str:
+    notes: list[str] = []
+    tm = primer.get("tm")
+    gc = primer.get("gc")
+    length = primer.get("length")
+    start = primer.get("start")
+    end = primer.get("end")
+    strand = primer.get("strand")
+    score = primer.get("score")
+    gc_clamp = primer.get("gc_clamp")
+    is_ideal = primer.get("is_ideal")
+
+    if tm is not None:
+        notes.append(f"Tm={float(tm):.2f}C")
+    if gc is not None:
+        notes.append(f"GC={float(gc):.1f}%")
+    if length is not None:
+        notes.append(f"len={_safe_value(length)}")
+    if start is not None and end is not None:
+        notes.append(f"pos={start}-{end}")
+    if strand is not None:
+        notes.append(f"strand={strand}")
+    if gc_clamp is not None:
+        notes.append(f"3' clamp={gc_clamp}")
+    if score is not None:
+        notes.append(f"score={float(score):.2f}")
+    if is_ideal:
+        notes.append("ideal")
+    return "; ".join(notes) if notes else "-"
+
+
+def _build_primer_list_text(
+    primer_candidates: list[dict[str, object]],
+    mode: str,
+) -> str:
+    if not primer_candidates:
+        return ""
+    if mode == "fasta":
+        lines: list[str] = []
+        for item in primer_candidates:
+            if not isinstance(item, dict):
+                continue
+            name = _safe_value(item.get("primer_id") or "primer")
+            seq = _safe_value(item.get("sequence"))
+            if not seq:
+                continue
+            lines.append(f">{name}")
+            lines.append(seq)
+        return "\n".join(lines)
+
+    delimiter = "\t" if mode == "tsv" else ("," if mode == "comma" else ";")
+    lines = []
+    for item in primer_candidates:
+        if not isinstance(item, dict):
+            continue
+        name = _safe_value(item.get("primer_id") or "primer")
+        seq = _safe_value(item.get("sequence"))
+        if not seq:
+            continue
+        notes = _format_primer_notes(item)
+        if delimiter == "\t":
+            lines.append(f"{name}\t{seq}\t{notes}")
+        else:
+            lines.append(f"{name}{delimiter} {seq}{delimiter} {notes}")
+    return "\n".join(lines)
+
+
+def _primer_list_filename(
+    result: dict[str, object], mode: str
+) -> tuple[str, str]:
+    base = _safe_value(result.get("record_name") or result.get("record_id") or "primer")
+    suffix = {
+        "tsv": "primer_list.tsv",
+        "semicolon": "primer_list.csv",
+        "comma": "primer_list.csv",
+        "fasta": "primer_list.fasta",
+    }.get(mode, "primer_list.txt")
+    if not base:
+        base = "primer"
+    base = "".join(c for c in base if c.isalnum() or c in ("_", "-", ".")) or "primer"
+    return f"{base}_{suffix}", "text/plain"
+
 with st.form("design_form"):
     st.subheader("설계 조건")
     c1, c2 = st.columns(2)
@@ -412,6 +501,44 @@ st.download_button(
     mime="application/octet-stream",
     use_container_width=True,
 )
+
+st.subheader("프라이머 리스트 다운로드")
+primer_candidates = result.get("primer_candidates") or []
+if not isinstance(primer_candidates, list):
+    primer_candidates = []
+primer_candidates = [x for x in primer_candidates if isinstance(x, dict)]
+
+if primer_candidates:
+    list_mode = st.selectbox(
+        "출력 형식",
+        [
+            "TSV (Name <tab> Sequence <tab> Notes)",
+            "semicolon (Name; Sequence; Notes)",
+            "comma (Name, Sequence, Notes)",
+            "Multi-FASTA",
+        ],
+    )
+    mode = "tsv"
+    if list_mode.startswith("semicolon"):
+        mode = "semicolon"
+    elif list_mode.startswith("comma"):
+        mode = "comma"
+    elif list_mode.startswith("Multi-FASTA"):
+        mode = "fasta"
+
+    list_text = _build_primer_list_text(primer_candidates, mode)
+    file_name, mime = _primer_list_filename(result, mode)
+    st.download_button(
+        label="프라이머 목록 파일 다운로드",
+        data=list_text,
+        file_name=file_name,
+        mime=mime,
+        use_container_width=True,
+    )
+    with st.expander("프라이머 목록 미리보기 (상위 20개)"):
+        st.text("\n".join(list_text.splitlines()[:20]) if list_text else "(데이터 없음)")
+else:
+    st.info("프라이머 후보가 없어 목록 파일을 생성할 수 없습니다.")
 
 st.subheader("프라이머 후보 미리보기")
 primer_candidates = result.get("primer_candidates")
