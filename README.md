@@ -34,7 +34,9 @@ python -m streamlit run src/webui.py
 
 #### 2) 포터블 실행(설치 생략)
 
-1. `release\pimer_maker_release\PrimerMaker.exe` 더블클릭
+1. `release\pimer_maker_release\run_primer_maker_direct.bat` 더블클릭
+2. EXE 실행이 실패해도 Python 직접 실행 모드로 폴백되어 동작합니다.
+3. 브라우저에서 `http://localhost:8501`로 접속하세요.
 
 #### 3) 개발용 직접 실행
 
@@ -68,6 +70,7 @@ scripts\make_primer_desktop_shortcut.bat
   - 후보 프라이머 간섭 점검
   - GB 주석 생성
 - `scripts/launch_primer_webui.bat`: Windows 더블클릭 실행기
+- `scripts/run_primer_maker_direct.bat`: 설치 없이 바로 실행(포터블 실행기)
 - `scripts/make_primer_desktop_shortcut.bat`: 바탕화면 바로가기 생성기
 - `requirements.txt`: 기존 `biopython`, `streamlit` 기반 의존성
 

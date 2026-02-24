@@ -83,6 +83,7 @@ if exist "%PROJECT_DIR%\data" xcopy /E /I /Y "%PROJECT_DIR%\data" "%RELEASE_DIR%
 copy /Y "%PROJECT_DIR%\dist\%APP_NAME%.exe" "%RELEASE_DIR%\%APP_NAME%.exe" >nul
 if exist "%ICON_FILE%" copy /Y "%ICON_FILE%" "%RELEASE_DIR%\%APP_NAME%.ico" >nul
 copy /Y "%PROJECT_DIR%\scripts\install_primer_maker.bat" "%RELEASE_DIR%\install_primer_maker.bat" >nul
+copy /Y "%PROJECT_DIR%\scripts\run_primer_maker_direct.bat" "%RELEASE_DIR%\run_primer_maker_direct.bat" >nul
 copy /Y "%PROJECT_DIR%\scripts\make_primer_desktop_shortcut.bat" "%RELEASE_DIR%\make_primer_desktop_shortcut.bat" >nul
 
 if exist "%RELEASE_BASE%\pimer_maker_release.zip" del "%RELEASE_BASE%\pimer_maker_release.zip"
