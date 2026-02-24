@@ -41,7 +41,8 @@ class ApiClient:
         self.offline = offline
         self.ttl_seconds = ttl_hours * 3600
         self.cache_path = Path(cache_path or Path("data/cache"))
-        self.cache_file = self.cache_path / "utg_api_cache.json"
+        self.cache_file = self.cache_path / "pimer_maker_api_cache.json"
+        self.legacy_cache_file = self.cache_path / "utg_api_cache.json"
         if self.cache_enabled:
             self.cache_path.mkdir(parents=True, exist_ok=True)
         self.session = requests.Session()
@@ -69,14 +70,20 @@ class ApiClient:
         return hashlib.sha256(body.encode("utf-8")).hexdigest()
 
     def _read_cache(self) -> dict[str, Any]:
-        if not self.cache_file.exists():
-            return {}
-        try:
-            text = self.cache_file.read_text(encoding="utf-8")
-            raw = json.loads(text)
-            return raw if isinstance(raw, dict) else {}
-        except Exception:
-            return {}
+        if self.cache_file.exists():
+            try:
+                text = self.cache_file.read_text(encoding="utf-8")
+                raw = json.loads(text)
+                return raw if isinstance(raw, dict) else {}
+            except Exception:
+                return {}
+        if self.legacy_cache_file.exists():
+            try:
+                text = self.legacy_cache_file.read_text(encoding="utf-8")
+                raw = json.loads(text)
+                return raw if isinstance(raw, dict) else {}
+            except Exception:
+                return {}
 
     def _write_cache(self, payload: dict[str, Any]) -> None:
         if not self.cache_enabled:

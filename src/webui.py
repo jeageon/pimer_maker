@@ -101,10 +101,17 @@ if run_btn:
             st.error(f"실행 실패: {exc}")
             st.exception(exc)
             st.stop()
+        if not isinstance(result, dict) or not isinstance(result.get("metadata"), dict):
+            st.error("설계 결과가 올바른 형식이 아닙니다.")
+            st.stop()
         st.session_state["last_result"] = result
 else:
-    result = previous_result
+    if isinstance(previous_result, dict) and isinstance(previous_result.get("metadata"), dict):
+        result = previous_result
+    else:
+        result = None
 if result is None:
+    st.error("설계 결과가 없습니다. 먼저 '프라이머 설계 실행'을 눌러 결과를 생성해 주세요.")
     st.stop()
 
 st.success("설계 완료")
