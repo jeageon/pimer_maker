@@ -1065,6 +1065,10 @@ def build_annotated_record(
         output.features.append(item)
 
     for feature in sorted(interference_regions, key=lambda item: (item.start, item.end)):
+        merged_hits = _feature_merged_hits(feature.attributes)
+        note = feature.description
+        if merged_hits > 1:
+            note = f"{note} (merged_hits={merged_hits})"
         output.features.append(
             SeqFeature(
                 FeatureLocation(
@@ -1075,9 +1079,10 @@ def build_annotated_record(
                 type="misc_feature",
                 qualifiers={
                     "label": [f"interference_{feature.feature_type}"],
-                    "note": [feature.description],
+                    "note": [note],
                     "source": [feature.source],
                     "reason": [feature.feature_type],
+                    "merged_hits": [str(merged_hits)],
                     "ApEinfo_fwdcolor": ["#ff9999"],
                     "ApEinfo_revcolor": ["#ff6666"],
                 },
@@ -1086,6 +1091,10 @@ def build_annotated_record(
 
     for feature in sorted(palindrome_regions, key=lambda item: (item.start, item.end)):
         reason = str(feature.attributes.get("reason") or feature.feature_type).replace("palindrome_", "")
+        merged_hits = _feature_merged_hits(feature.attributes)
+        note = feature.description
+        if merged_hits > 1:
+            note = f"{note} (merged_hits={merged_hits})"
         output.features.append(
             SeqFeature(
                 FeatureLocation(
@@ -1096,10 +1105,11 @@ def build_annotated_record(
                 type="misc_feature",
                 qualifiers={
                     "label": [f"excluded_{reason}"],
-                    "note": [feature.description],
+                    "note": [note],
                     "source": [feature.source],
                     "reason": [reason],
                     "core_feature_type": [feature.feature_type],
+                    "merged_hits": [str(merged_hits)],
                     "ApEinfo_fwdcolor": ["#ffb347"],
                     "ApEinfo_revcolor": ["#ffb347"],
                 },
@@ -1453,15 +1463,45 @@ def _merge_intervals(features: list[NegativeFeature]) -> list[NegativeFeature]:
                 feature_type=prev.feature_type,
                 start=min(prev.start, feature.start),
                 end=max(prev.end, feature.end),
-                description=f"{prev.description}; {feature.description}",
+                description=_merge_feature_descriptions(prev.description, feature.description),
                 source=prev.source,
                 score=_max_score(prev.score, feature.score),
                 strand=prev.strand if prev.strand is not None else feature.strand,
-                attributes={**prev.attributes, **feature.attributes},
+                attributes=_merge_feature_attributes(prev.attributes, feature.attributes),
             )
         else:
             merged.append(feature)
     return merged
+
+
+def _merge_feature_descriptions(prev_description: str, next_description: str) -> str:
+    seen: set[str] = set()
+    merged_parts: list[str] = []
+    for raw_value in (prev_description, next_description):
+        for part in str(raw_value or "").split(";"):
+            text = part.strip()
+            if not text or text in seen:
+                continue
+            seen.add(text)
+            merged_parts.append(text)
+    return "; ".join(merged_parts)
+
+
+def _merge_feature_attributes(
+    prev_attributes: dict[str, Any],
+    next_attributes: dict[str, Any],
+) -> dict[str, Any]:
+    merged = {**prev_attributes, **next_attributes}
+    merged["merged_hits"] = _feature_merged_hits(prev_attributes) + _feature_merged_hits(next_attributes)
+    return merged
+
+
+def _feature_merged_hits(attributes: dict[str, Any]) -> int:
+    value = attributes.get("merged_hits", 1)
+    try:
+        return max(1, int(value))
+    except (TypeError, ValueError):
+        return 1
 
 
 def _max_score(a: Optional[float], b: Optional[float]) -> Optional[float]:
