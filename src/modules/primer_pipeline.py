@@ -208,13 +208,17 @@ def run_primer_pipeline(
         max_candidates=max_candidates,
         self_dimer_exclude_identical_window=self_dimer_exclude_identical_window,
     )
+    palindrome_regions = _build_palindrome_interference_regions(
+        rejected_primer_features,
+        seq_len=len(sequence),
+    )
 
     run_id = hashlib.sha1(gb_bytes).hexdigest()[:10]
     annotated_record = build_annotated_record(
         record=record,
         interference_regions=interference,
         primer_candidates=primer_candidates,
-        rejected_primer_features=rejected_primer_features,
+        palindrome_regions=palindrome_regions,
         plasmid_name=plasmid_name,
     )
     gb_text = _to_genbank_text(annotated_record)
@@ -244,6 +248,7 @@ def run_primer_pipeline(
             for feature in rejected_primer_features
             if feature.reason in {"hairpin", "self_dimer"}
         ),
+        "palindrome_interference_count": len(palindrome_regions),
         "self_dimer_exclude_identical_window": self_dimer_exclude_identical_window,
         "primer_candidate_count": len(primer_candidates),
         "primer_ideal_count": sum(1 for item in primer_candidates if item.is_ideal),
@@ -259,6 +264,7 @@ def run_primer_pipeline(
         "sequence": sequence,
         "metadata": metadata,
         "interference_regions": [item.model_dump() for item in interference],
+        "palindrome_interference_regions": [item.model_dump() for item in palindrome_regions],
         "primer_candidates": [asdict(item) for item in primer_candidates],
         "rejected_primer_features": [asdict(item) for item in rejected_primer_features],
     }
@@ -1049,7 +1055,7 @@ def build_annotated_record(
     record: SeqRecord,
     interference_regions: list[NegativeFeature],
     primer_candidates: list[PrimerCandidate],
-    rejected_primer_features: list[RejectedPrimerFeature],
+    palindrome_regions: list[NegativeFeature],
     *,
     plasmid_name: str,
 ) -> SeqRecord:
@@ -1078,21 +1084,22 @@ def build_annotated_record(
             )
         )
 
-    palindrome_rejected = [
-        item for item in rejected_primer_features if item.reason in {"hairpin", "self_dimer"}
-    ]
-    for feature in sorted(palindrome_rejected, key=lambda item: (item.start, item.end)):
+    for feature in sorted(palindrome_regions, key=lambda item: (item.start, item.end)):
+        reason = str(feature.attributes.get("reason") or feature.feature_type).replace("palindrome_", "")
         output.features.append(
             SeqFeature(
-                FeatureLocation(max(0, feature.start), min(len(record.seq), feature.end)),
+                FeatureLocation(
+                    max(0, feature.start),
+                    min(len(record.seq), feature.end),
+                    strand=feature.strand or 0,
+                ),
                 type="misc_feature",
                 qualifiers={
-                    "label": [f"excluded_{feature.reason}"],
-                    "note": [f"excluded: {feature.reason}"],
-                    "sequence": [feature.sequence],
-                    "reason": [feature.reason],
-                    "details": [str(feature.details)],
-                    "length": [str(feature.length)],
+                    "label": [f"excluded_{reason}"],
+                    "note": [feature.description],
+                    "source": [feature.source],
+                    "reason": [reason],
+                    "core_feature_type": [feature.feature_type],
                     "ApEinfo_fwdcolor": ["#ffb347"],
                     "ApEinfo_revcolor": ["#ffb347"],
                 },
@@ -1266,6 +1273,155 @@ def _format_primer_label(plasmid_name: str, primer: PrimerCandidate) -> str:
     direction = "F" if primer.strand == 1 else "R"
     ideal_mark = "*" if primer.is_ideal else ""
     return f"{safe_plasmid}_{end_bp_1based}_{tm_value}_{direction}{ideal_mark}"
+
+
+def _build_palindrome_interference_regions(
+    rejected_primer_features: list[RejectedPrimerFeature],
+    *,
+    seq_len: int,
+) -> list[NegativeFeature]:
+    regions: list[NegativeFeature] = []
+    for feature in rejected_primer_features:
+        if feature.reason == "hairpin":
+            regions.extend(_hairpin_core_regions(feature, seq_len=seq_len))
+        elif feature.reason == "self_dimer":
+            regions.extend(_self_dimer_core_regions(feature, seq_len=seq_len))
+    return _merge_intervals([item for item in regions if item.end > item.start])
+
+
+def _hairpin_core_regions(
+    feature: RejectedPrimerFeature,
+    *,
+    seq_len: int,
+) -> list[NegativeFeature]:
+    details = feature.details or {}
+    overlap_len = _safe_int(details.get("overlap_len"))
+    match_start = _safe_int(details.get("match_start"), default=-1)
+    match_end = _safe_int(details.get("match_end"), default=-1)
+    regions: list[NegativeFeature] = []
+
+    if overlap_len > 0:
+        tail_start = max(0, feature.length - overlap_len)
+        tail_end = feature.length
+        tail_region = _core_region_from_local_span(
+            feature,
+            local_start=tail_start,
+            local_end=tail_end,
+            seq_len=seq_len,
+            feature_type="palindrome_hairpin",
+            description="hairpin-forming core region (3' tail)",
+            attributes={"reason": "hairpin", "overlap_len": overlap_len, "core_role": "tail"},
+        )
+        if tail_region is not None:
+            regions.append(tail_region)
+
+    if match_start >= 0 and match_end > match_start:
+        match_region = _core_region_from_local_span(
+            feature,
+            local_start=match_start,
+            local_end=match_end,
+            seq_len=seq_len,
+            feature_type="palindrome_hairpin",
+            description="hairpin-forming core region (internal match)",
+            attributes={"reason": "hairpin", "overlap_len": overlap_len, "core_role": "internal"},
+        )
+        if match_region is not None:
+            regions.append(match_region)
+
+    if regions:
+        return regions
+
+    fallback = _core_region_from_local_span(
+        feature,
+        local_start=0,
+        local_end=feature.length,
+        seq_len=seq_len,
+        feature_type="palindrome_hairpin",
+        description="hairpin-forming primer region",
+        attributes={"reason": "hairpin"},
+    )
+    return [fallback] if fallback is not None else []
+
+
+def _self_dimer_core_regions(
+    feature: RejectedPrimerFeature,
+    *,
+    seq_len: int,
+) -> list[NegativeFeature]:
+    details = feature.details or {}
+    overlap_len = _safe_int(details.get("overlap_len"))
+    paired_index_in_a = _safe_int(details.get("paired_index_in_a"), default=-1)
+    paired_index_in_b = _safe_int(details.get("paired_index_in_b"), default=-1)
+    regions: list[NegativeFeature] = []
+
+    if overlap_len > 0:
+        for local_start, core_role in (
+            (paired_index_in_a, "segment_a"),
+            (paired_index_in_b, "segment_b"),
+        ):
+            if local_start < 0:
+                continue
+            core_region = _core_region_from_local_span(
+                feature,
+                local_start=local_start,
+                local_end=local_start + overlap_len,
+                seq_len=seq_len,
+                feature_type="palindrome_self_dimer",
+                description="self-dimer-forming core region",
+                attributes={
+                    "reason": "self_dimer",
+                    "overlap_len": overlap_len,
+                    "core_role": core_role,
+                },
+            )
+            if core_region is not None:
+                regions.append(core_region)
+
+    if regions:
+        return regions
+
+    fallback = _core_region_from_local_span(
+        feature,
+        local_start=0,
+        local_end=feature.length,
+        seq_len=seq_len,
+        feature_type="palindrome_self_dimer",
+        description="self-dimer-forming primer region",
+        attributes={"reason": "self_dimer"},
+    )
+    return [fallback] if fallback is not None else []
+
+
+def _core_region_from_local_span(
+    feature: RejectedPrimerFeature,
+    *,
+    local_start: int,
+    local_end: int,
+    seq_len: int,
+    feature_type: str,
+    description: str,
+    attributes: dict[str, Any],
+) -> Optional[NegativeFeature]:
+    start = max(0, feature.start + local_start)
+    end = min(seq_len, feature.start + local_end)
+    if end <= start:
+        return None
+    return NegativeFeature(
+        feature_type=feature_type,
+        start=start,
+        end=end,
+        description=description,
+        source="primer_pipeline",
+        strand=0,
+        attributes=attributes,
+    )
+
+
+def _safe_int(value: object, *, default: int = 0) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
 
 
 def _safe_name(value: str, max_len: int = 40) -> str:

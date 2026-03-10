@@ -681,7 +681,11 @@ interference_regions = result.get("interference_regions") or []
 if not isinstance(interference_regions, list):
     interference_regions = []
 rejected_primer_features = result.get("rejected_primer_features") or []
-palindrome_features = _build_palindrome_features_for_gff3(rejected_primer_features)
+palindrome_features = result.get("palindrome_interference_regions") or []
+if not isinstance(palindrome_features, list):
+    palindrome_features = []
+if not palindrome_features:
+    palindrome_features = _build_palindrome_features_for_gff3(rejected_primer_features)
 if interference_regions or palindrome_features:
     combined_interference_features = [
         item for item in interference_regions if isinstance(item, dict)
